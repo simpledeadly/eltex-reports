@@ -1,0 +1,111 @@
+Script started on 2026-07-08 06:00:43+00:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="112" LINES="31"]
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# journal [Kctl -b --untiol[K[Kl "#[K$(date -d "${}[C[K[K()u)p)t)i)m)e) )-)s)[C + 2- [K[K0 seonds[K[K[K[Kconds [K" + '%Y-%m-$d %H:%M:%A[KS')" [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K"
+[?2004ldate: extra operand ‘%Y-%m-$d %H:%M:%S’
+Try 'date --help' for more information.
+[0;1;31mFailed to parse timestamp: [0m
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# journalctl -b --until "$(date -d "$(uptime -s) + 20 seconds" + '%Y-%m-$d %H:%M:%S')" [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1P
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+[?2004l[0;1;31mFailed to parse timestamp: 2026-07-$d 04:49:38[0m
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# journalctl -b --until "$(date -d "$(uptime -s) + 20 seconds" +'%Y-%m-$d %H:%M:%S')"[1P[1@%
+[?2004l[?1h=-- No entries --[m
+[K[?1l>[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# fid[Knd /var/log -name auth.log
+[?2004l/var/log/auth.log
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# awk '{print #[K$5'[K}' /var /[K[K/log/auth.log | sed 's/|[K\[[-[K0-9]*\];[K://' | sorte [K[K | uniq -c "[K| sort - nr | head -n 20
+[?2004l    153 session
+     20 rules
+     15 password
+     12 'tech'
+     10 system
+      8 loading,
+      6 from
+      6 disconnect
+      6 added
+      5 user1)
+      5 group:
+      4 user:
+      4 the
+      4 seat
+      4 garbage
+      3 user3)
+      3 user2)
+      3 user
+      3 is
+      2 'user3'
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# awk -F [K: '$7=="/usr/sbin/nologin" {print #[K$3","$1"}' /etc/passw[K[Kw[Kswd | sort -t [K, -k1,1nr |  while IFS=, read uid user; do groupt[Ks=${}[C[K[K()i)d) )-)G)n) )$)u)s)e)r) ) )|)[1P)[1P)") )t)r)[1P)[1P)[1P)[1P)|) )t)r) )') )') )') )[1P),) )[1P)')[C; echo ""[K$us[Kid, $user, $groups"; done
+[?2004lawk: cmd. line:1: $7=="/usr/sbin/nologin" {print $3","$1"}
+awk: cmd. line:1:                                       ^ unterminated string
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# awk -F: '$7=="/usr/sbin/nologin" {print $3","$1"}' /etc/passwd | sort -t, -k1,1nr | while IFS=, read uid user; do groups=$(id -Gn $user | tr ' ' ','); echo "$uid, $user, $groups"; done[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C'{print $5}' /var/log/auth.log | sed 's/\[[0-9]*\]://' | sort | uniq -c | sort -nr | head -n 20[K[A]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [C[C[C[C-F: '$7=="/usr/sbin/nologin" {print $3","$1"}' /etc/passwd | sort -t, -k1,1nr | while IFS=, read uid user; do groups=$(id -Gn $user | tr ' ' ','); echo "$uid, $user, $groups"; done[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C}' /etc/passwd | sort -t, -k1,1nr | wh[1P[A]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+
+[?2004l65534, nobody, nogroup
+1003, user3, user3,users,sharedgroup
+998, systemd-network, systemd-network
+997, systemd-timesync, systemd-timesync
+992, systemd-resolve, systemd-resolve
+991, polkitd, polkitd
+989, fwupd-refresh, fwupd-refresh
+109, sshd, nogroup
+108, usbmux, plugdev
+107, landscape, landscape
+105, tcpdump, tcpdump
+104, uuidd, uuidd
+103, syslog, syslog,adm
+101, messagebus, messagebus
+42, _apt, nogroup
+39, irc, irc
+38, list, list
+34, backup, backup
+33, www-data, www-data
+13, proxy, proxy
+10, uucp, uucp
+9, news, news
+8, mail, mail
+7, lp, lp
+6, man, man
+5, games, games
+3, sys, sys
+2, bin, bin
+1, daemon, daemon
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# dmesg _[K| grep 'kerna[Kel'
+[?2004l[    0.133436] Booting paravirtualized [01;31m[Kkernel[m[K on KVM
+[    0.134944] Unknown [01;31m[Kkernel[m[K command line parameters "BOOT_IMAGE=/vmlinuz-6.8.0-55-generic", will be passed to user space.
+[    0.287775] Memory: 3933488K/4193760K available (22528K [01;31m[Kkernel[m[K code, 4443K rwdata, 14344K rodata, 4988K init, 4716K bss, 260012K reserved, 0K cma-reserved)
+[    0.926416] Loaded X.509 cert 'Build time autogenerated [01;31m[Kkernel[m[K key: e0bedf6fa049a1e09bd65ebab3904f14cdd5bc68'
+[    1.162849] Loaded X.509 cert 'Build time autogenerated [01;31m[Kkernel[m[K key: e0bedf6fa049a1e09bd65ebab3904f14cdd5bc68'
+[    1.211875] Freeing unused [01;31m[Kkernel[m[K image (initmem) memory: 4988K
+[    1.212888] Write protecting the [01;31m[Kkernel[m[K read-only data: 38912k
+[    1.217094] Freeing unused [01;31m[Kkernel[m[K image (rodata/data gap) memory: 2040K
+[   15.840586] systemd[1]: Listening on systemd-udevd-[01;31m[Kkernel[m[K.socket - udev Kernel Socket.
+[   16.045388] systemd[1]: Mounting sys-[01;31m[Kkernel[m[K-debug.mount - Kernel Debug File System...
+[   16.051310] systemd[1]: Mounting sys-[01;31m[Kkernel[m[K-tracing.mount - Kernel Trace File System...
+[   16.559241] systemd[1]: Mounted sys-[01;31m[Kkernel[m[K-debug.mount - Kernel Debug File System.
+[   16.565661] systemd[1]: Mounted sys-[01;31m[Kkernel[m[K-tracing.mount - Kernel Trace File System.
+[   16.598751] systemd[1]: Mounting sys-[01;31m[Kkernel[m[K-config.mount - Kernel Configuration File System...
+[   16.640000] systemd[1]: Mounted sys-[01;31m[Kkernel[m[K-config.mount - Kernel Configuration File System.
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# wc -l /var/log/kern.log 
+[?2004l2851 /var/log/kern.log
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mawk -v RS="\n\n" -v ORS="\n" '/Commandline:/ {cmd=""; start=""; end=""; split($0, a,[27m[7m [27m[7m"\n"); for(i in a){ if(a[i]~/^Commandline:/) cmd=a[i]; if(a[i]~/^Start-Date:/) start=a[i]; if(a[i]~/^End-Date:/[27m[7m)[27m[7m end=a[i]; } print cmd " ; " start " ; " end}' /var/log/apt/history.log | head -n 20[27m[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cawk -v RS="\n\n" -v ORS="\n" '/Commandline:/ {cmd=""; start=""; end=""; split($0, a, "\n"); for(i in a){ if(a[i]~/^Commandline:/) cmd=a[i]; if(a[i]~/^Start-Date:/) start=a[i]; if(a[i]~/^End-Date:/) end=a[i]; } print cmd " ; " start " ; " end}' /var/log/apt/history.log | head -n 20
+[?2004lCommandline: apt-get install --reinstall apt ; Start-Date: 2025-02-16  20:51:22 ; End-Date: 2025-02-16  20:51:24
+Commandline: apt-get install --reinstall base-files ; Start-Date: 2025-02-16  20:51:26 ; End-Date: 2025-02-16  20:51:28
+Commandline: apt-get install --reinstall base-passwd ; Start-Date: 2025-02-16  20:51:31 ; End-Date: 2025-02-16  20:51:32
+Commandline: apt-get install --reinstall bash ; Start-Date: 2025-02-16  20:51:35 ; End-Date: 2025-02-16  20:51:37
+Commandline: apt-get install --reinstall bsdutils ; Start-Date: 2025-02-16  20:51:39 ; End-Date: 2025-02-16  20:51:41
+Commandline: apt-get install --reinstall coreutils ; Start-Date: 2025-02-16  20:51:44 ; End-Date: 2025-02-16  20:51:45
+Commandline: apt-get install --reinstall dash ; Start-Date: 2025-02-16  20:51:48 ; End-Date: 2025-02-16  20:51:49
+Commandline: apt-get install --reinstall debconf ; Start-Date: 2025-02-16  20:51:52 ; End-Date: 2025-02-16  20:51:53
+Commandline: apt-get install --reinstall debianutils ; Start-Date: 2025-02-16  20:51:56 ; End-Date: 2025-02-16  20:51:58
+Commandline: apt-get install --reinstall diffutils ; Start-Date: 2025-02-16  20:52:00 ; End-Date: 2025-02-16  20:52:02
+Commandline: apt-get install --reinstall dpkg ; Start-Date: 2025-02-16  20:52:04 ; End-Date: 2025-02-16  20:52:06
+Commandline: apt-get install --reinstall e2fsprogs ; Start-Date: 2025-02-16  20:52:09 ; End-Date: 2025-02-16  20:52:10
+Commandline: apt-get install --reinstall findutils ; Start-Date: 2025-02-16  20:52:13 ; End-Date: 2025-02-16  20:52:14
+Commandline: apt-get install --reinstall gcc-14-base:amd64 ; Start-Date: 2025-02-16  20:52:17 ; End-Date: 2025-02-16  20:52:18
+Commandline: apt-get install --reinstall gpgv ; Start-Date: 2025-02-16  20:52:21 ; End-Date: 2025-02-16  20:52:23
+Commandline: apt-get install --reinstall grep ; Start-Date: 2025-02-16  20:52:25 ; End-Date: 2025-02-16  20:52:27
+Commandline: apt-get install --reinstall gzip ; Start-Date: 2025-02-16  20:52:29 ; End-Date: 2025-02-16  20:52:31
+Commandline: apt-get install --reinstall hostname ; Start-Date: 2025-02-16  20:52:34 ; End-Date: 2025-02-16  20:52:35
+Commandline: apt-get install --reinstall init-system-helpers ; Start-Date: 2025-02-16  20:52:38 ; End-Date: 2025-02-16  20:52:39
+Commandline: apt-get install --reinstall libacl1:amd64 ; Start-Date: 2025-02-16  20:52:42 ; End-Date: 2025-02-16  20:52:43
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# clear
+[?2004l[H[2J[3J[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# exit
+[?2004lexit
+
+Script done on 2026-07-08 06:11:53+00:00 [COMMAND_EXIT_CODE="0"]
