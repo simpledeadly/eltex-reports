@@ -602,3 +602,7 @@ root@eltex-practice2-v34:~# ls
 1           etc_backup.7z    etc_backup_gzip     etc_backup.tar.gz              practice2_eltex-v34_part2.log
 etc_backup  etc_backup_7zip  etc_backup.tar.bz2  practice2_eltex-v34_part1.log  practice2_eltex-v34_part3.log
 ```
+
+---
+
+_PS: After a whole journey, I thought I had captured everything — but I was wrong..._
