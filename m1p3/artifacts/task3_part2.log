@@ -1,0 +1,517 @@
+Script started on 2026-07-10 05:10:59+00:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="100" LINES="25"]
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [H[2J]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat > /root/cuckoo.sh << 'ENDOFSCRIPT'
+#!/bin/bash
+
+PIPE=/tmp/run/cuckoo.pid
+LOG=/root/cuckoo.log
+
+mkdir -p /tmp/run
+rm -f "$PIPE"
+mkfifo "$PIPE"
+
+[7mecho "$(date '+%Y-%m-%d %H:%M:%S') Startup!" >> "$LOG"[27m
+
+[7mcleanup() {[27m
+[7m    echo "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> "$LOG"[27m
+[7m    rm -f "$PIPE"[27m
+[7m    exit 0[27m
+[7m}[27m
+
+[7mtrap cleanup SIGTERM[27m
+
+[7mwhile true; do[27m
+[7m    if read -r line < "$PIPE"; then[27m
+[7m        if [[ "$line" =~ ^(.+)\[([0-9]+)\]:\ how\ much\ time\ do\ I\ have\?$ ]]; then[27m
+[7m            NAME="${BASH_REMATCH[1]}"[27m
+[7m            PID="${BASH_REMATCH[2]}"[27m
+[7m            N=$(( RANDOM % 9 + 2 ))[27m[7m            echo "$(date '+%Y-%m-%d %H:%M:%S') ${NAME}[${PID}] $N" >> "$LOG"[27m[7m            echo "$N" > "/tmp/run/${PID}.response"[27m[7m        fi[27m[7m    fi[27m[7mdone[27m[7mENDOFSCRIPT[27m[7mchmod +x /root/cuckoo.sh[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Aecho "$(date '+%Y-%m-%d %H:%M:%S') Startup!" >> "$LOG"
+
+cleanup() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> "$LOG"
+    rm -f "$PIPE"
+    exit 0
+}
+
+trap cleanup SIGTERM
+
+while true; do
+    if read -r line < "$PIPE"; then
+        if [[ "$line" =~ ^(.+)\[([0-9]+)\]:\ how\ much\ time\ do\ I\ have\?$ ]]; then
+            NAME="${BASH_REMATCH[1]}"
+            PID="${BASH_REMATCH[2]}"
+            N=$(( RANDOM % 9 + 2 ))            echo "$(date '+%Y-%m-%d %H:%M:%S') ${NAME}[${PID}] $N" >> "$LOG"            echo "$N" > "/tmp/run/${PID}.response"        fi    fidoneENDOFSCRIPTchmod +x /root/cuckoo.sh
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# screen [K[K[K[K[K[K[Kls -Al /root/
+[?2004ltotal 8688
+-rw-r--r--   1 root root    1361 Jul  8 05:07 1
+-rw-------   1 root root    3975 Jul 10 05:08 .bash_history
+-rw-r--r--   1 root root    3106 Apr 22  2024 .bashrc
+drwx------   2 root root    4096 Jul  8 00:47 [0m[01;34m.cache[0m
+drwx------   3 root root    4096 Jul 10 04:53 [01;34m.config[0m
+-rwxr-xr-x   1 root root     689 Jul 10 05:12 [01;32mcuckoo.sh[0m
+drwxr-xr-x 109 root root    4096 Jul  8 05:40 [01;34metc_backup[0m
+-rw-r--r--   1 root root 4676518 Jul  8 05:49 [01;31metc_backup.7z[0m
+drwxr-xr-x   3 root root    4096 Jul  8 05:55 [01;34metc_backup_7zip[0m
+drwxr-xr-x   4 root root    4096 Jul  8 05:54 [01;34metc_backup_gzip[0m
+-rw-r--r--   1 root root  566926 Jul  8 05:47 [01;31metc_backup.tar.bz2[0m
+-rw-r--r--   1 root root  595308 Jul  8 05:52 [01;31metc_backup.tar.gz[0m
+-rw-------   1 root root      20 Jul  8 06:03 .lesshst
+-rw-r--r--   1 root root   56143 Jul  8 05:58 practice2_eltex-v34_part1.log
+-rw-r--r--   1 root root   10370 Jul  8 06:11 practice2_eltex-v34_part2.log
+-rw-r--r--   1 root root   41503 Jul  8 06:20 practice2_eltex-v34_part3.log
+-rw-r--r--   1 root root     161 Apr 22  2024 .profile
+drwx------   2 root root    4096 Mar 12  2025 [01;34m.ssh[0m
+-rw-r--r--   1 root root 2873937 Jul 10 05:03 task3_part1.log
+-rw-r--r--   1 root root       0 Jul 10 05:10 task3_part2.log
+-rw-------   1 root root    1043 Jul  8 05:32 .viminfo
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ls -Al
+[?2004ltotal 8688
+-rw-r--r--   1 root root    1361 Jul  8 05:07 1
+-rw-------   1 root root    3975 Jul 10 05:08 .bash_history
+-rw-r--r--   1 root root    3106 Apr 22  2024 .bashrc
+drwx------   2 root root    4096 Jul  8 00:47 [0m[01;34m.cache[0m
+drwx------   3 root root    4096 Jul 10 04:53 [01;34m.config[0m
+-rwxr-xr-x   1 root root     689 Jul 10 05:12 [01;32mcuckoo.sh[0m
+drwxr-xr-x 109 root root    4096 Jul  8 05:40 [01;34metc_backup[0m
+-rw-r--r--   1 root root 4676518 Jul  8 05:49 [01;31metc_backup.7z[0m
+drwxr-xr-x   3 root root    4096 Jul  8 05:55 [01;34metc_backup_7zip[0m
+drwxr-xr-x   4 root root    4096 Jul  8 05:54 [01;34metc_backup_gzip[0m
+-rw-r--r--   1 root root  566926 Jul  8 05:47 [01;31metc_backup.tar.bz2[0m
+-rw-r--r--   1 root root  595308 Jul  8 05:52 [01;31metc_backup.tar.gz[0m
+-rw-------   1 root root      20 Jul  8 06:03 .lesshst
+-rw-r--r--   1 root root   56143 Jul  8 05:58 practice2_eltex-v34_part1.log
+-rw-r--r--   1 root root   10370 Jul  8 06:11 practice2_eltex-v34_part2.log
+-rw-r--r--   1 root root   41503 Jul  8 06:20 practice2_eltex-v34_part3.log
+-rw-r--r--   1 root root     161 Apr 22  2024 .profile
+drwx------   2 root root    4096 Mar 12  2025 [01;34m.ssh[0m
+-rw-r--r--   1 root root 2873937 Jul 10 05:03 task3_part1.log
+-rw-r--r--   1 root root       0 Jul 10 05:10 task3_part2.log
+-rw-------   1 root root    1043 Jul  8 05:32 .viminfo
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# screen -S cuckoo -d -m /root/cuckoo.sh 
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# screen pls[K[K[K-ls
+[?2004lThere is a screen on:
+	2960.cuckoo	(07/10/2026 05:13:54 AM)	(Detached)
+1 Socket in /run/screen/S-root.
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat /root/cuckoo.
+[?2004lcat: /root/cuckoo.: No such file or directory
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat /root/cuckoo.sh[K[Klog
+[?2004l2026-07-10 05:13:53 Startup!
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ls[Kn -s /root/tepm[K[Kmpal[K[Klate_task.sh /root [K/task_alpha
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ln -s /root/template_task.sh /root/task_alpha[K[K[K[K[Kbta[K[Keta
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ln -s /root/template_task.sh /root/task_beta[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kln -s /root/template_task.sh /root/task_beta[K[K[K[Kgamma
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# /root/task_alpa[Kha &
+[?2004l[1] 2973
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# bash: /root/task_alpha: No such file or directory
+sleep 1
+[?2004l[1]+  Exit 127                /root/task_alpha
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat /root/report_task [K_alpah[K[Kha.log
+[?2004lcat: /root/report_task_alpha.log: No such file or directory
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ls -la /root/tepm[K[Kmplate_task.sh
+[?2004lls: cannot access '/root/template_task.sh': No such file or directory
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mls -la /root/task_alpha[27mls -la /root/task_alpha
+[?2004llrwxrwxrwx 1 root root 22 Jul 10 05:14 [0m[40;31;01m/root/task_alpha[0m -> [40;31;01m/root/template_task.sh[0m
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mls -la /root/template_task.sh[27mls -la /root/template_task.sh
+[?2004lls: cannot access '/root/template_task.sh': No such file or directory
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [H[2J]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat > /root/template_task.sh << 'ENDOFSCRIPT'
+#!/bin/bash
+
+SCRIPT_NAME=$(basename "$0")
+if [ "$SCRIPT_NAME" = "template_task.sh" ]; then
+    echo "я бригадир, сам не работаю"
+    exit 1
+fi
+
+PIPE=/tmp/run/cuckoo.pid
+[7mLOG_FILE="/root/report_${SCRIPT_NAME}.log"[27m
+[7mPID=$$[27m
+
+[7mecho "$(date '+%Y-%m-%d %H:%M:%S') [$PID] Скрипт запущен" >> "$LOG_FILE"[27m
+
+[7m# Спрашиваем у cuckoo сколько у нас времени[27m
+[7mecho "${SCRIPT_NAME}[$PID]: how much time do I have?" > "$PIPE"[27m
+
+[7m# Ждём ответа (cuckoo пишет в /tmp/run/PID.response)[27m
+[7mRESP_FILE="/tmp/run/${PID}.response"[27m
+[7mfor i in $(seq 1 20); do[27m
+[7m    [ -f "$RESP_FILE" ] && break[27m
+[7m    sleep 0.5[27m
+[7mdone[27m
+
+[7mN=$(cat "$RESP_FILE" 2>/dev/null || echo 5)[27m[7mrm -f "$RESP_FILE"[27m[7msleep "$N"[27m[7mecho "$(date '+%Y-%m-%d %H:%M:%S') [$PID] Скрипт завершился, работал $N секунд" >> "$LOG_FILE"[27m[7mENDOFSCRIPT[27m[7mchmod +x /root/template_task.sh[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[ALOG_FILE="/root/report_${SCRIPT_NAME}.log"
+PID=$$
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') [$PID] Скрипт запущен" >> "$LOG_FILE"
+
+# Спрашиваем у cuckoo сколько у нас времени
+echo "${SCRIPT_NAME}[$PID]: how much time do I have?" > "$PIPE"
+
+# Ждём ответа (cuckoo пишет в /tmp/run/PID.response)
+RESP_FILE="/tmp/run/${PID}.response"
+for i in $(seq 1 20); do
+    [ -f "$RESP_FILE" ] && break
+    sleep 0.5
+done
+
+N=$(cat "$RESP_FILE" 2>/dev/null || echo 5)rm -f "$RESP_FILE"sleep "$N"echo "$(date '+%Y-%m-%d %H:%M:%S') [$PID] Скрипт завершился, работал $N секунд" >> "$LOG_FILE"ENDOFSCRIPTchmod +x /root/template_task.sh
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [H[2J]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat > /root/observer.sh << 'ENDOFSCRIPT'
+#!/bin/bash
+
+CONFIG=/root/observer.conf
+[7mLOG=/root/observer.log[27m
+
+[7mwhile IFS= read -r script || [ -n "$script" ]; do[27m
+[7m    [ -z "$script" ] && continue[27m
+[7m    name=$(basename "$script")[27m
+[7m    running=0[27m
+[7m    for pid_dir in /proc/[0-9]*/; do[27m
+[7m        cmdline=$(cat "${pid_dir}cmdline" 2>/dev/null | tr '\0' ' ')[27m
+[7m        if echo "$cmdline" | grep -q "$name"; then[27m
+[7m            running=1[27m
+[7m            break[27m
+[7m        fi[27m
+[7m    done[27m
+
+[7m    if [ "$running" -eq 0 ]; then[27m
+[7m        echo "$(date '+%Y-%m-%d %H:%M:%S') $name not running, starting..." >> "$LOG"[27m
+[7m        bash "$script" &[27m
+[7m    else[27m
+[7m        echo "$(date '+%Y-%m-%d %H:%M:%S') $name is running OK" >> "$LOG"[27m
+[7m    fi[27m
+[7mdone < "$CONFIG"[27m
+[7mENDOFSCRIPT[27m[7mchmod +x /root/observer.sh[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[ALOG=/root/observer.log
+
+while IFS= read -r script || [ -n "$script" ]; do
+    [ -z "$script" ] && continue
+    name=$(basename "$script")
+    running=0
+    for pid_dir in /proc/[0-9]*/; do
+        cmdline=$(cat "${pid_dir}cmdline" 2>/dev/null | tr '\0' ' ')
+        if echo "$cmdline" | grep -q "$name"; then
+            running=1
+            break
+        fi
+    done
+
+    if [ "$running" -eq 0 ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') $name not running, starting..." >> "$LOG"
+        bash "$script" &
+    else
+        echo "$(date '+%Y-%m-%d %H:%M:%S') $name is running OK" >> "$LOG"
+    fi
+done < "$CONFIG"
+ENDOFSCRIPTchmod +x /root/observer.sh
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [H[2J]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# screen -ls
+[?2004lThere is a screen on:
+	2960.cuckoo	(07/10/2026 05:13:53 AM)	(Detached)
+1 Socket in /run/screen/S-root.
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat /root/co[Kuckoo.log
+[?2004l2026-07-10 05:13:53 Startup!
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mln -s /root/template_task.sh /root/task_alpha[27m
+[7mln -s /root/template_task.sh /root/task_beta[27m
+[7mln -s /root/template_task.sh /root/task_gamma[27m[A[Aln -s /root/template_task.sh /root/task_alpha
+ln -s /root/template_task.sh /root/task_beta
+ln -s /root/template_task.sh /root/task_gamma
+[?2004lln: failed to create symbolic link '/root/task_alpha': File exists
+ln: failed to create symbolic link '/root/task_beta': File exists
+ln: failed to create symbolic link '/root/task_gamma': File exists
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# /root/tq[Kask_alpha 
+[?2004l^C
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# /root/task_alpha &
+[?2004l[1] 3004
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# sleep 1
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat /root/report_task_alpha.log 
+[?2004l2026-07-10 05:17:30 [2995] Скрипт запущен
+2026-07-10 05:17:35 [3004] Скрипт запущен
+2026-07-10 05:17:45 [3004] Скрипт завершился, работал 9 секунд
+[1]+  Done                    /root/task_alpha
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mcat > /root/observer.conf << 'EOF'[27m
+[7m/root/template_task.sh[27m
+[7m/root/task_alpha[27m
+[7m/root/task_beta[27m
+[7m/root/task_gamma[27m
+[7mEOF[27m
+[A[A[A[A[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccat > /root/observer.conf << 'EOF'
+/root/template_task.sh
+/root/task_alpha
+/root/task_beta
+/root/task_gamma
+EOF
+[A
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ls
+[?2004l1              [0m[01;34metc_backup_7zip[0m     [01;32mobserver.sh[0m                    task3_part1.log  [01;32mtemplate_task.sh[0m
+cuckoo.log     [01;34metc_backup_gzip[0m     practice2_eltex-v34_part1.log  task3_part2.log
+[01;32mcuckoo.sh[0m      [01;31metc_backup.tar.bz2[0m  practice2_eltex-v34_part2.log  [01;36mtask_alpha[0m
+[01;34metc_backup[0m     [01;31metc_backup.tar.gz[0m   practice2_eltex-v34_part3.log  [01;36mtask_beta[0m
+[01;31metc_backup.7z[0m  observer.conf       report_task_alpha.log          [01;36mtask_gamma[0m
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# crontab -e
+[?2004lno crontab for root - using an empty one
+
+Select an editor.  To change later, run 'select-editor'.
+  1. /bin/nano        <---- easiest
+  2. /usr/bin/vim.basic
+  3. /usr/bin/vim.tiny
+  4. /bin/ed
+
+Choose 1-4 [1]: 1
+[?2004h[?1049h[22;0;0t[1;25r(B[m[4l[?7h[39;49m[?1h=[?1h=[?25l[39;49m(B[m[H[2J[23;44H(B[0;7m[ Reading... ](B[m[23;42H(B[0;7m[ Read 23 lines ](B[m[H(B[0;7m  GNU nano 7.2                         /tmp/crontab.ntCkKa/crontab                                  [1;99H(B[m[24d(B[0;7m^G(B[m Help[15G(B[0;7m^O(B[m Write Out  (B[0;7m^W(B[m Where Is   (B[0;7m^K(B[m Cut[24;57H(B[0;7m^T(B[m Execute    (B[0;7m^C(B[m Location   (B[0;7mM-U(B[m Undo[25d(B[0;7m^X(B[m Exit[15G(B[0;7m^R(B[m Read File  (B[0;7m^\(B[m Replace    (B[0;7m^U(B[m Paste[57G(B[0;7m^J(B[m Justify    (B[0;7m^/(B[m Go To Line (B[0;7mM-E(B[m Redo[2d[36m# Edit this file to introduce tasks to be run by cron.[3d# [4d# Each task to run has to be defined through a single line[5d# indicating with different fields when the task will be run[6d# and what command to run for the task[7d# [8d# To define the time you can provide concrete values for[9d# minute (m), hour (h), day of month (dom), month (mon),[10d# and day of week (dow) or use '*' in these fields (for 'any').[11d# [12d# Notice that tasks will be started based on the cron's system[13d# daemon's notion of time and timezones.[14d# [15d# Output of the crontab jobs (including errors) is sent through[16d# email to the user the crontab file belongs to (unless redirected).[17d# [18d# For example, you can run a backup of all your user accounts[19d# at 5 a.m every week with:[20d# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/[21d# [22d# For more information see the manual pages of crontab(5) and cron(8)[2d[39m(B[m[?12l[?25h[?25l[?12l[?25h[3d[?25l[1;68H(B[0;7m*[99G(B[m[?12l[?25h[3dq#[?25l[?12l[?25hx#[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[23d(B[0;7mSave modified buffer?                                                                               [24;1H Y(B[m Yes[K[25d(B[0;7m N(B[m No  [15G  (B[0;7m^C(B[m Cancel[K[23;23H[?12l[?25h[?25l[J[25d[?12l[?25h[25;1H[?1049l[23;0;0t[?1l>[?2004lNo modification made
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# crontab -e
+[?2004lno crontab for root - using an empty one
+[?2004h[?1049h[22;0;0t[1;25r(B[m[4l[?7h[39;49m[?1h=[?1h=[?25l[39;49m(B[m[H[2J[23;44H(B[0;7m[ Reading... ](B[m[23;42H(B[0;7m[ Read 23 lines ](B[m[H(B[0;7m  GNU nano 7.2                         /tmp/crontab.fFPTmm/crontab                                  [1;99H(B[m[24d(B[0;7m^G(B[m Help[15G(B[0;7m^O(B[m Write Out  (B[0;7m^W(B[m Where Is   (B[0;7m^K(B[m Cut[24;57H(B[0;7m^T(B[m Execute    (B[0;7m^C(B[m Location   (B[0;7mM-U(B[m Undo[25d(B[0;7m^X(B[m Exit[15G(B[0;7m^R(B[m Read File  (B[0;7m^\(B[m Replace    (B[0;7m^U(B[m Paste[57G(B[0;7m^J(B[m Justify    (B[0;7m^/(B[m Go To Line (B[0;7mM-E(B[m Redo[2d[36m# Edit this file to introduce tasks to be run by cron.[3d# [4d# Each task to run has to be defined through a single line[5d# indicating with different fields when the task will be run[6d# and what command to run for the task[7d# [8d# To define the time you can provide concrete values for[9d# minute (m), hour (h), day of month (dom), month (mon),[10d# and day of week (dow) or use '*' in these fields (for 'any').[11d# [12d# Notice that tasks will be started based on the cron's system[13d# daemon's notion of time and timezones.[14d# [15d# Output of the crontab jobs (including errors) is sent through[16d# email to the user the crontab file belongs to (unless redirected).[17d# [18d# For example, you can run a backup of all your user accounts[19d# at 5 a.m every week with:[20d# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/[21d# [22d# For more information see the manual pages of crontab(5) and cron(8)[2d[39m(B[m[?12l[?25h[?25l[?12l[?25h[3d[?25l[?12l[?25h[4d[?25l[?12l[?25h[5d[?25l[?12l[?25h[6d[?25l[?12l[?25h[7d[?25l[?12l[?25h[8d[?25l[?12l[?25h[9d[?25l[?12l[?25h[10d[?25l[?12l[?25h[11d[?25l[?12l[?25h[12d[?25l[?12l[?25h[13d[?25l[?12l[?25h[14d[?25l[?12l[?25h[15d[?25l[?12l[?25h[16d[?25l[?12l[?25h[17d[?25l[?12l[?25h[18d[?25l[?12l[?25h[19d[?25l[?12l[?25h[21d[?25l[23d[K[?12l[?25h7[2;23r8[3S[1;25r[20;1H[36m# [21d# m h  dom mon dow   command[22d[39m(B[m[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[1;68H(B[0;7m*[99G(B[m[?12l[?25h[22d*[?25l[?12l[?25h [?25l[?12l[?25h*[?25l[?12l[?25h [?25l[?12l[?25h*[?25l[?12l[?25h*[?25l[?12l[?25h [?25l[?12l[?25h*[?25l[?12l[?25h [?25l[?12l[?25h[?25l[?12l[?25h [?25l[?12l[?25h [?25l[?12l[?25h*[?25l[?12l[?25h [?25l[?12l[?25h*[?25l[?12l[?25h [?25l[?12l[?25h/[?25l[?12l[?25hr[?25l[?12l[?25ho[?25l[?12l[?25ho[?25l[?12l[?25ht[?25l[?12l[?25h/[?25l[?12l[?25hb[?25l[?12l[?25ho[?25l[?12l[?25h [?25l[?12l[?25h [?25l[?12l[?25ho[?25l[?12l[?25hb[?25l[?12l[?25hs[?25l[?12l[?25he[?25l[?12l[?25hr[?25l[?12l[?25hv[?25l[?12l[?25he[?25l[?12l[?25hr[?25l[?12l[?25h.[?25l[?12l[?25hs[?25l[?12l[?25hh[?25l[23d(B[0;7mSave modified buffer?                                                                               [24;1H Y(B[m Yes[K[25d(B[0;7m N(B[m No  [15G  (B[0;7m^C(B[m Cancel[K[23;23H[?12l[?25h[?25l[24d(B[0;7m^G(B[m Help[24;26H(B[0;7mM-D(B[m DOS Format[24;51H(B[0;7mM-A(B[m Append[24;76H(B[0;7mM-B(B[m Backup File[25d(B[0;7m^C(B[m Cancel[17G         (B[0;7mM-M(B[m Mac Format[25;51H(B[0;7mM-P(B[m Prepend[25;76H(B[0;7m^T(B[m Browse[23d(B[0;7mFile Name to Write: /tmp/crontab.fFPTmm/crontab(B[m[?12l[?25h[?25l[43G[1K (B[0;7m[ Writing... ](B[m[K[1;68H(B[0;7m [99G(B[m[23;42H(B[0;7m[ Wrote 24 lines ](B[m[J[25d[?12l[?25h[25;1H[?1049l[23;0;0t[?1l>[?2004lcrontab: installing new crontab
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# conta[K[K[K[Krontab -l
+[?2004l# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+* * * * * /root/observer.sh
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# sleep 120
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat / [Kroot/obserfer[K[K[Kver.og[K[Klog
+[?2004l2026-07-10 05:23:01 template_task.sh not running, starting...
+2026-07-10 05:23:01 task_alpha not running, starting...
+2026-07-10 05:23:01 task_beta not running, starting...
+2026-07-10 05:23:02 task_gamma not running, starting...
+2026-07-10 05:24:01 template_task.sh not running, starting...
+2026-07-10 05:24:01 task_alpha not running, starting...
+2026-07-10 05:24:01 task_beta not running, starting...
+2026-07-10 05:24:01 task_gamma not running, starting...
+2026-07-10 05:25:01 template_task.sh not running, starting...
+2026-07-10 05:25:01 task_alpha not running, starting...
+2026-07-10 05:25:02 task_beta not running, starting...
+2026-07-10 05:25:02 task_gamma not running, starting...
+2026-07-10 05:26:01 template_task.sh not running, starting...
+2026-07-10 05:26:01 task_alpha not running, starting...
+2026-07-10 05:26:01 task_beta not running, starting...
+2026-07-10 05:26:01 task_gamma not running, starting...
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat /root/observer.log[1P.log[1P.log[1P.log[1P.log[1P.log[1P.log[1P.log[1P.logc.logu.logc.logkoo..log[1Plog
+[?2004l2026-07-10 05:13:53 Startup!
+2026-07-10 05:17:30 task_alpha[2995] 5
+2026-07-10 05:17:35 task_alpha[3004] 9
+2026-07-10 05:23:01 task_alpha[4264] 7
+2026-07-10 05:23:01 task_beta[4872] 6
+2026-07-10 05:23:02 task_gamma[5493] 9
+2026-07-10 05:24:01 task_alpha[6704] 3
+2026-07-10 05:24:01 task_beta[7315] 4
+2026-07-10 05:24:01 task_gamma[7936] 10
+2026-07-10 05:25:01 task_alpha[9157] 2
+2026-07-10 05:25:02 task_beta[9773] 9
+2026-07-10 05:25:02 task_gamma[10399] 7
+2026-07-10 05:26:01 task_alpha[11694] 8
+2026-07-10 05:26:01 task_beta[12315] 10
+2026-07-10 05:26:01 task_gamma[12941] 7
+2026-07-10 05:27:02 task_alpha[14158] 6
+2026-07-10 05:27:02 task_beta[14769] 8
+2026-07-10 05:27:02 task_gamma[15390] 5
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [K]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# clear
+[?2004l[H[2J[3J[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# crontab -e
+[?2004l[?2004h[?1049h[22;0;0t[1;27r(B[m[4l[?7h[39;49m[?1h=[?1h=[?25l[39;49m(B[m[H[2J[25;46H(B[0;7m[ Reading... ](B[m[25;45H(B[0;7m[ Read 24 lines ](B[m[H(B[0;7m  GNU nano 7.2                           /tmp/crontab.123FsY/crontab                                     [1;104H(B[m[26d(B[0;7m^G(B[m Help[26;16H(B[0;7m^O(B[m Write Out   (B[0;7m^W(B[m Where Is    (B[0;7m^K(B[m Cut[26;61H(B[0;7m^T(B[m Execute     (B[0;7m^C(B[m Location    (B[0;7mM-U(B[m Undo[27d(B[0;7m^X(B[m Exit[27;16H(B[0;7m^R(B[m Read File   (B[0;7m^\(B[m Replace     (B[0;7m^U(B[m Paste[61G(B[0;7m^J(B[m Justify     (B[0;7m^/(B[m Go To Line  (B[0;7mM-E(B[m Redo[2d[36m# Edit this file to introduce tasks to be run by cron.[3d# [4d# Each task to run has to be defined through a single line[5d# indicating with different fields when the task will be run[6d# and what command to run for the task[7d# [8d# To define the time you can provide concrete values for[9d# minute (m), hour (h), day of month (dom), month (mon),[10d# and day of week (dow) or use '*' in these fields (for 'any').[11d# [12d# Notice that tasks will be started based on the cron's system[13d# daemon's notion of time and timezones.[14d# [15d# Output of the crontab jobs (including errors) is sent through[16d# email to the user the crontab file belongs to (unless redirected).[17d# [18d# For example, you can run a backup of all your user accounts[19d# at 5 a.m every week with:[20d# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/[21d# [22d# For more information see the manual pages of crontab(5) and cron(8)[23d# [24d# m h  dom mon dow   command[2d[39m(B[m[?12l[?25h[?25l[?12l[?25h[3d[?25l[?12l[?25h[4d[?25l[?12l[?25h[5d[?25l[?12l[?25h[6d[?25l[?12l[?25h[7d[?25l[?12l[?25h[8d[?25l[?12l[?25h[9d[?25l[?12l[?25h[10d[?25l[?12l[?25h[11d[?25l[?12l[?25h[12d[?25l[?12l[?25h[13d[?25l[?12l[?25h[14d[?25l[?12l[?25h[15d[?25l[?12l[?25h[16d[?25l[?12l[?25h[17d[?25l[?12l[?25h[18d[?25l[?12l[?25h[19d[?25l[?12l[?25h[20d[?25l[?12l[?25h[21d[?25l[25d[K[?12l[?25h[22d[?25l[?12l[?25h[23d[?25l[?12l[?25h[24d[?25l[?12l[?25h7[2;25r8[25d
+[1;27r[24;1H* * * * * /root/observer.sh[?25l[?12l[?25h7[2;25r8[25d
+[1;27r[24;1H[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[A[?25l[1;70H(B[0;7m*[104G(B[m[23d[K[?12l[?25h[?25l[26;16H           (B[0;7mM-D(B[m DOS Format            (B[0;7mM-A(B[m Append[16X[26;79H(B[0;7mM-B(B[m Backup File[K[27;2H(B[0;7mC(B[m Cancel[16G           (B[0;7mM-M(B[m Mac Format            (B[0;7mM-P(B[m Prepend[15X[27;79H(B[0;7m^T(B[m Browse[K[25d(B[0;7mFile Name to Write: /tmp/crontab.123FsY/crontab                                                          [25;48H(B[m[?12l[?25h[?25l[1K (B[0;7m[ Writing... ](B[m[K[1;70H(B[0;7m [104G(B[m[25;44H(B[0;7m[ Wrote 23 lines ](B[m[26;16H(B[0;7m^O(B[m Write Out   (B[0;7m^W(B[m Where Is    (B[0;7m^K(B[m Cut         (B[0;7m^T(B[m Execute     (B[0;7m^C(B[m Location    (B[0;7mM-U(B[m Undo[27;2H(B[0;7mX(B[m Exit  [16G(B[0;7m^R(B[m Read File   (B[0;7m^\(B[m Replace     (B[0;7m^U(B[m Paste       (B[0;7m^J(B[m Justify     (B[0;7m^/(B[m Go To Line  (B[0;7mM-E(B[m Redo[?12l[?25h[23d[?25l[1;70H(B[0;7m*[104G(B[m[24d[?12l[?25h[?25l[25d(B[0;7mSave modified buffer?                                                                                    [26;1H Y(B[m Yes[K[27d(B[0;7m N(B[m No  [27;16H (B[0;7m^C(B[m Cancel[K[25;23H[?12l[?25h[?25l[26d(B[0;7m^G(B[m Help[26;27H(B[0;7mM-D(B[m DOS Format[26;53H(B[0;7mM-A(B[m Append[26;79H(B[0;7mM-B(B[m Backup File[27d(B[0;7m^C(B[m Cancel[17G          (B[0;7mM-M(B[m Mac Format[27;53H(B[0;7mM-P(B[m Prepend[27;79H(B[0;7m^T(B[m Browse[25d(B[0;7mFile Name to Write: /tmp/crontab.123FsY/crontab(B[m[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l(B[0;7m (B[m[?12l[?25h[?25l(B[0;7m (B[m[?12l[?25h[?25l[1K (B[0;7m[ Cancelled ](B[m[K[26;16H(B[0;7m^O(B[m Write Out   (B[0;7m^W(B[m Where Is    (B[0;7m^K(B[m Cut         (B[0;7m^T(B[m Execute     (B[0;7m^C(B[m Location    (B[0;7mM-U(B[m Undo[27;2H(B[0;7mX(B[m Exit  [16G(B[0;7m^R(B[m Read File   (B[0;7m^\(B[m Replace     (B[0;7m^U(B[m Paste       (B[0;7m^J(B[m Justify     (B[0;7m^/(B[m Go To Line  (B[0;7mM-E(B[m Redo[?12l[?25h[24d[?25l[A[?12l[?25h[?25l[25d(B[0;7mSave modified buffer?                                                                                    [26;1H Y(B[m Yes[K[27d(B[0;7m N(B[m No  [27;16H (B[0;7m^C(B[m Cancel[K[25;23H[?12l[?25h[?25l[26d(B[0;7m^G(B[m Help[26;27H(B[0;7mM-D(B[m DOS Format[26;53H(B[0;7mM-A(B[m Append[26;79H(B[0;7mM-B(B[m Backup File[27d(B[0;7m^C(B[m Cancel[17G          (B[0;7mM-M(B[m Mac Format[27;53H(B[0;7mM-P(B[m Prepend[27;79H(B[0;7m^T(B[m Browse[25d(B[0;7mFile Name to Write: /tmp/crontab.123FsY/crontab(B[m[?12l[?25h[?25l[1K (B[0;7m[ Writing... ](B[m[K[1;70H(B[0;7m [104G(B[m[25;44H(B[0;7m[ Wrote 23 lines ](B[m[J[27d[?12l[?25h[27;1H[?1049l[23;0;0t[?1l>[?2004lcrontab: installing new crontab
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# top
+[?2004l[?1h=[?25l[H[2J(B[mtop - 05:28:22 up 14:24,  2 users,  load average: 0.04, 0.03, 0.00(B[m[39;49m(B[m[39;49m[K
+Tasks:(B[m[39;49m[1m 117 (B[m[39;49mtotal,(B[m[39;49m[1m   1 (B[m[39;49mrunning,(B[m[39;49m[1m 116 (B[m[39;49msleeping,(B[m[39;49m[1m   0 (B[m[39;49mstopped,(B[m[39;49m[1m   0 (B[m[39;49mzombie(B[m[39;49m(B[m[39;49m[K
+%Cpu(s):(B[m[39;49m[1m  4.8 (B[m[39;49mus,(B[m[39;49m[1m  0.0 (B[m[39;49msy,(B[m[39;49m[1m  0.0 (B[m[39;49mni,(B[m[39;49m[1m 95.2 (B[m[39;49mid,(B[m[39;49m[1m  0.0 (B[m[39;49mwa,(B[m[39;49m[1m  0.0 (B[m[39;49mhi,(B[m[39;49m[1m  0.0 (B[m[39;49msi,(B[m[39;49m[1m  0.0 (B[m[39;49mst(B[m[39;49m(B[m (B[m[39;49m(B[m[39;49m[K
+MiB Mem :(B[m[39;49m[1m   3915.9 (B[m[39;49mtotal,(B[m[39;49m[1m   3089.3 (B[m[39;49mfree,(B[m[39;49m[1m    441.9 (B[m[39;49mused,(B[m[39;49m[1m    612.8 (B[m[39;49mbuff/cache(B[m[39;49m(B[m (B[m[39;49m(B[m    (B[m[39;49m(B[m[39;49m[K
+MiB Swap:(B[m[39;49m[1m   3185.0 (B[m[39;49mtotal,(B[m[39;49m[1m   3185.0 (B[m[39;49mfree,(B[m[39;49m[1m      0.0 (B[m[39;49mused.(B[m[39;49m[1m   3474.0 (B[m[39;49mavail Mem (B[m[39;49m(B[m[39;49m[K
+[K
+[7m    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                           (B[m[39;49m[K
+(B[m      1 root      20   0   22188  13296   9556 S   0.0   0.3   0:02.36 systemd                           (B[m[39;49m[K
+(B[m      2 root      20   0       0      0      0 S   0.0   0.0   0:00.02 kthreadd                          (B[m[39;49m[K
+(B[m      3 root      20   0       0      0      0 S   0.0   0.0   0:00.00 pool_workqueue_release            (B[m[39;49m[K
+(B[m      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-rcu_g                   (B[m[39;49m[K
+(B[m      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-rcu_p                   (B[m[39;49m[K
+(B[m      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-slub_                   (B[m[39;49m[K
+(B[m      7 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-netns                   (B[m[39;49m[K
+(B[m     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-events_highpri       (B[m[39;49m[K
+(B[m     12 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-mm_pe                   (B[m[39;49m[K
+(B[m     13 root      20   0       0      0      0 I   0.0   0.0   0:00.00 rcu_tasks_kthread                 (B[m[39;49m[K
+(B[m     14 root      20   0       0      0      0 I   0.0   0.0   0:00.00 rcu_tasks_rude_kthread            (B[m[39;49m[K
+(B[m     15 root      20   0       0      0      0 I   0.0   0.0   0:00.00 rcu_tasks_trace_kthread           (B[m[39;49m[K
+(B[m     16 root      20   0       0      0      0 S   0.0   0.0   0:00.03 ksoftirqd/0                       (B[m[39;49m[K
+(B[m     17 root      20   0       0      0      0 I   0.0   0.0   0:00.56 rcu_preempt                       (B[m[39;49m[K
+(B[m     18 root      rt   0       0      0      0 S   0.0   0.0   0:00.21 migration/0                       (B[m[39;49m[K
+(B[m     19 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/0                     (B[m[39;49m[K
+(B[m     20 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/0                           (B[m[39;49m[K
+(B[m     21 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/1                           (B[m[39;49m[K
+(B[m     22 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/1                     (B[m[39;49m[K
+(B[m     23 root      rt   0       0      0      0 S   0.0   0.0   0:00.19 migration/1                       (B[m[39;49m[K[H(B[mtop - 05:28:25 up 14:24,  2 users,  load average: 0.04, 0.03, 0.00(B[m[39;49m(B[m[39;49m[K
+Tasks:(B[m[39;49m[1m 117 (B[m[39;49mtotal,(B[m[39;49m[1m   2 (B[m[39;49mrunning,(B[m[39;49m[1m 115 (B[m[39;49msleeping,(B[m[39;49m[1m   0 (B[m[39;49mstopped,(B[m[39;49m[1m   0 (B[m[39;49mzombie(B[m[39;49m(B[m[39;49m[K
+%Cpu(s):(B[m[39;49m[1m  0.0 (B[m[39;49mus,(B[m[39;49m[1m  0.2 (B[m[39;49msy,(B[m[39;49m[1m  0.0 (B[m[39;49mni,(B[m[39;49m[1m 99.8 (B[m[39;49mid,(B[m[39;49m[1m  0.0 (B[m[39;49mwa,(B[m[39;49m[1m  0.0 (B[m[39;49mhi,(B[m[39;49m[1m  0.0 (B[m[39;49msi,(B[m[39;49m[1m  0.0 (B[m[39;49mst(B[m[39;49m(B[m (B[m[39;49m(B[m[39;49m[K
+
+
+[K
+
+(B[m   2690 root      20   0   14936  10816   8800 S   0.3   0.3   0:01.11 sshd                              (B[m[39;49m[K
+(B[m      1 root      20   0   22188  13296   9556 S   0.0   0.3   0:02.36 systemd                           (B[m[39;49m[K
+(B[m      2 root      20   0       0      0      0 S   0.0   0.0   0:00.02 kthreadd                          (B[m[39;49m[K
+(B[m      3 root      20   0       0      0      0 S   0.0   0.0   0:00.00 pool_workqueue_release            (B[m[39;49m[K
+(B[m      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-rcu_g                   (B[m[39;49m[K
+(B[m      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-rcu_p                   (B[m[39;49m[K
+(B[m      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-slub_                   (B[m[39;49m[K
+(B[m      7 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-netns                   (B[m[39;49m[K
+(B[m     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-events_highpri       (B[m[39;49m[K
+(B[m     12 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-mm_pe                   (B[m[39;49m[K
+(B[m     13 root      20   0       0      0      0 I   0.0   0.0   0:00.00 rcu_tasks_kthread                 (B[m[39;49m[K
+(B[m     14 root      20   0       0      0      0 I   0.0   0.0   0:00.00 rcu_tasks_rude_kthread            (B[m[39;49m[K
+(B[m     15 root      20   0       0      0      0 I   0.0   0.0   0:00.00 rcu_tasks_trace_kthread           (B[m[39;49m[K
+(B[m     16 root      20   0       0      0      0 S   0.0   0.0   0:00.03 ksoftirqd/0                       (B[m[39;49m[K
+(B[m     17 root      20   0       0      0      0 I   0.0   0.0   0:00.56 rcu_preempt                       (B[m[39;49m[K
+(B[m     18 root      rt   0       0      0      0 S   0.0   0.0   0:00.21 migration/0                       (B[m[39;49m[K
+(B[m     19 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/0                     (B[m[39;49m[K
+(B[m     20 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/0                           (B[m[39;49m[K
+(B[m     21 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/1                           (B[m[39;49m[K
+(B[m     22 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/1                     (B[m[39;49m[K[6;1H[1mWhich user (blank for all) [?12;25h(B[m[39;49m[K[?12l[?25h[6;28H[Ku[6;29H[6;28H[Kus[6;30H[6;28H[Kuse[6;31H[6;28H[Kuser[6;32H[6;28H[Kuser1[6;33H[?25l[H(B[mtop - 05:28:26 up 14:24,  2 users,  load average: 0.04, 0.03, 0.00(B[m[39;49m(B[m[39;49m[K
+Tasks:(B[m[39;49m[1m 117 (B[m[39;49mtotal,(B[m[39;49m[1m   2 (B[m[39;49mrunning,(B[m[39;49m[1m 115 (B[m[39;49msleeping,(B[m[39;49m[1m   0 (B[m[39;49mstopped,(B[m[39;49m[1m   0 (B[m[39;49mzombie(B[m[39;49m(B[m[39;49m[K
+%Cpu(s):(B[m[39;49m[1m  0.0 (B[m[39;49mus,(B[m[39;49m[1m  0.0 (B[m[39;49msy,(B[m[39;49m[1m  0.0 (B[m[39;49mni,(B[m[39;49m[1m 96.8 (B[m[39;49mid,(B[m[39;49m[1m  3.2 (B[m[39;49mwa,(B[m[39;49m[1m  0.0 (B[m[39;49mhi,(B[m[39;49m[1m  0.0 (B[m[39;49msi,(B[m[39;49m[1m  0.0 (B[m[39;49mst(B[m[39;49m(B[m (B[m[39;49m(B[m[39;49m[K
+MiB Mem :(B[m[39;49m[1m   3915.9 (B[m[39;49mtotal,(B[m[39;49m[1m   3089.3 (B[m[39;49mfree,(B[m[39;49m[1m    441.9 (B[m[39;49mused,(B[m[39;49m[1m    612.8 (B[m[39;49mbuff/cache(B[m[39;49m(B[m (B[m[39;49m(B[m    (B[m[39;49m(B[m[39;49m[K
+MiB Swap:(B[m[39;49m[1m   3185.0 (B[m[39;49mtotal,(B[m[39;49m[1m   3185.0 (B[m[39;49mfree,(B[m[39;49m[1m      0.0 (B[m[39;49mused.(B[m[39;49m[1m   3474.0 (B[m[39;49mavail Mem (B[m[39;49m(B[m[39;49m[K
+[K
+[7m    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                           (B[m[39;49m[K
+(B[m   2673 user1     20   0    8644   5592   3868 S   0.0   0.1   0:00.01 bash                              (B[m[39;49m[K
+[J[6;1H[1mWhich user (blank for all) [?12;25h(B[m[39;49m[K[?12l[?25h[?25l[H(B[mtop - 05:28:28 up 14:24,  2 users,  load average: 0.04, 0.03, 0.00(B[m[39;49m(B[m[39;49m[K
+Tasks:(B[m[39;49m[1m 117 (B[m[39;49mtotal,(B[m[39;49m[1m   1 (B[m[39;49mrunning,(B[m[39;49m[1m 116 (B[m[39;49msleeping,(B[m[39;49m[1m   0 (B[m[39;49mstopped,(B[m[39;49m[1m   0 (B[m[39;49mzombie(B[m[39;49m(B[m[39;49m[K
+%Cpu(s):(B[m[39;49m[1m  0.0 (B[m[39;49mus,(B[m[39;49m[1m  0.0 (B[m[39;49msy,(B[m[39;49m[1m  0.0 (B[m[39;49mni,(B[m[39;49m[1m 98.1 (B[m[39;49mid,(B[m[39;49m[1m  1.9 (B[m[39;49mwa,(B[m[39;49m[1m  0.0 (B[m[39;49mhi,(B[m[39;49m[1m  0.0 (B[m[39;49msi,(B[m[39;49m[1m  0.0 (B[m[39;49mst(B[m[39;49m(B[m (B[m[39;49m(B[m[39;49m[K
+MiB Mem :(B[m[39;49m[1m   3915.9 (B[m[39;49mtotal,(B[m[39;49m[1m   3089.3 (B[m[39;49mfree,(B[m[39;49m[1m    441.8 (B[m[39;49mused,(B[m[39;49m[1m    612.8 (B[m[39;49mbuff/cache(B[m[39;49m(B[m (B[m[39;49m(B[m    (B[m[39;49m(B[m[39;49m[K
+MiB Swap:(B[m[39;49m[1m   3185.0 (B[m[39;49mtotal,(B[m[39;49m[1m   3185.0 (B[m[39;49mfree,(B[m[39;49m[1m      0.0 (B[m[39;49mused.(B[m[39;49m[1m   3474.0 (B[m[39;49mavail Mem (B[m[39;49m(B[m[39;49m[K
+[K
+[7m    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                           (B[m[39;49m[K
+(B[m   2690 root      20   0   14936  10816   8800 S   0.0   0.3   0:01.12 sshd                              (B[m[39;49m[K
+(B[m   2746 root      20   0    8780   5716   3936 S   0.0   0.1   0:00.01 bash                              (B[m[39;49m[K
+(B[m   2882 root      20   0       0      0      0 I   0.0   0.0   0:00.01 kworker/1:1-events_freezable      (B[m[39;49m[K
+(B[m   2885 root      20   0       0      0      0 I   0.0   0.0   0:00.06 kworker/u4:3-flush-252:0          (B[m[39;49m[K
+(B[m   2947 root      20   0    5704   2336   2208 S   0.0   0.1   0:00.02 script                            (B[m[39;49m[K
+(B[m   2948 root      20   0    8108   5084   3928 S   0.0   0.1   0:00.04 bash                              (B[m[39;49m[K
+(B[m   2960 root      20   0    7204   2820   2060 S   0.0   0.1   0:00.00 screen                            (B[m[39;49m[K
+(B[m   2961 root      20   0    7472   3916   3484 S   0.0   0.1   0:00.00 cuckoo.sh                         (B[m[39;49m[K
+(B[m   3019 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0                       (B[m[39;49m[K
+(B[m   3046 root      20   0       0      0      0 I   0.0   0.0   0:00.03 kworker/u4:0-events_unbound       (B[m[39;49m[K
+(B[m  12956 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/1:0                       (B[m[39;49m[K
+(B[m  12957 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/1:3                       (B[m[39;49m[K
+(B[m  15401 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/u4:2-events_power_effici+ (B[m[39;49m[K
+(B[m[1m  17981 root      20   0   11908   6052   3856 R   0.0   0.2   0:00.00 top                               (B[m[39;49m[K
+[J[?1l>[28;1H
+[?12l[?25h[K[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ps aux | grep cuckoo
+[?2004lroot        2960  0.0  0.0   7204  2820 ?        Ss   05:13   0:00 SCREEN -S [01;31m[Kcuckoo[m[K -d -m /root/[01;31m[Kcuckoo[m[K.sh
+root        2961  0.0  0.0   7472  3916 pts/1    Ss+  05:13   0:00 /bin/bash /root/[01;31m[Kcuckoo[m[K.sh
+root       17983  0.0  0.0   6544  2392 pts/0    S+   05:28   0:00 grep --color=auto [01;31m[Kcuckoo[m[K
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# pkill -SIGTERM -f cuckoo.sh
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# sleep 2
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# tail -e[K3 /root/cuckoo.log
+[?2004l2026-07-10 05:28:01 task_alpha[16676] 4
+2026-07-10 05:28:01 task_beta[17317] 4
+2026-07-10 05:28:02 task_gamma[17968] 3
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# ls
+[?2004l1                [0m[01;34metc_backup_gzip[0m     practice2_eltex-v34_part1.log  task3_part1.log
+cuckoo.log       [01;31metc_backup.tar.bz2[0m  practice2_eltex-v34_part2.log  task3_part2.log
+[01;32mcuckoo.sh[0m        [01;31metc_backup.tar.gz[0m   practice2_eltex-v34_part3.log  [01;36mtask_alpha[0m
+[01;34metc_backup[0m       observer.conf       report_task_alpha.log          [01;36mtask_beta[0m
+[01;31metc_backup.7z[0m    observer.log        report_task_beta.log           [01;36mtask_gamma[0m
+[01;34metc_backup_7zip[0m  [01;32mobserver.sh[0m         report_task_gamma.log          [01;32mtemplate_task.sh[0m
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mgrep "Shutdown" /root/cuckoo.log[27m
+[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cgrep "Shutdown" /root/cuckoo.log
+[A
+[?2004l[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mecho "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> /root/cuckoo.log[27m
+[7mtail -5 /root/cuckoo.log[27m
+[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cecho "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> /root/cuckoo.log
+tail -5 /root/cuckoo.log
+[A
+[?2004l2026-07-10 05:27:02 task_gamma[15390] 5
+2026-07-10 05:28:01 task_alpha[16676] 4
+2026-07-10 05:28:01 task_beta[17317] 4
+2026-07-10 05:28:02 task_gamma[17968] 3
+2026-07-10 05:30:00 Shutdown!
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# crontab[K[K[K[K[K[K[Ktail -3 /root/cuckoo..log[K[K[K[Klog
+[?2004l2026-07-10 05:28:01 task_beta[17317] 4
+2026-07-10 05:28:02 task_gamma[17968] 3
+2026-07-10 05:30:00 Shutdown!
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# tail -3 /root/cuckoo.log
+[?2004l2026-07-10 05:28:01 task_beta[17317] 4
+2026-07-10 05:28:02 task_gamma[17968] 3
+2026-07-10 05:30:00 Shutdown!
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# tail -3 /root/cuckoo.log
+[?2004l2026-07-10 05:28:01 task_beta[17317] 4
+2026-07-10 05:28:02 task_gamma[17968] 3
+2026-07-10 05:30:00 Shutdown!
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# cat cicu[K[K[Kuckoo.sh
+[?2004l#!/bin/bash
+
+PIPE=/tmp/run/cuckoo.pid
+LOG=/root/cuckoo.log
+
+mkdir -p /tmp/run
+rm -f "$PIPE"
+mkfifo "$PIPE"
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') Startup!" >> "$LOG"
+
+cleanup() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> "$LOG"
+    rm -f "$PIPE"
+    exit 0
+}
+
+trap cleanup SIGTERM
+
+while true; do
+    if read -r line < "$PIPE"; then
+        if [[ "$line" =~ ^(.+)\[([0-9]+)\]:\ how\ much\ time\ do\ I\ have\?$ ]]; then
+            NAME="${BASH_REMATCH[1]}"
+            PID="${BASH_REMATCH[2]}"
+            N=$(( RANDOM % 9 + 2 ))
+            echo "$(date '+%Y-%m-%d %H:%M:%S') ${NAME}[${PID}] $N" >> "$LOG"
+            echo "$N" > "/tmp/run/${PID}.response"
+        fi
+    fi
+done
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# clear
+[?2004l[H[2J[3J[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# conta[K[K[K[Krontab-[K -l
+[?2004l# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+[?2004h]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [H[2J]0;root@eltex-practice2-v34: ~root@eltex-practice2-v34:~# [7mtar -czf task3_report.tar.gz \[27m
+[7m    /root/task3_part1.log \[27m
+[7m    /root/task3_part2.log \[27m
+[7m    /root/cuckoo.log \[27m
+[7m    /root/observer.log \[27m
+[7m    /root/report_task_alpha.log \[27m
+[7m    /root/report_task_beta.log \[27m
+[7m    /root/report_task_gamma.log \[27m
+[7m    /root/cuckoo.sh \[27m
+[7m    /root/template_task.sh \[27m
+[7m

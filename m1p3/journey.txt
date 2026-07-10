@@ -1,0 +1,199 @@
+ОТЧËТ О ВЫПОЛНЕНИИ ПРАКТИКИ 3 МОДУЛЯ 1
+
+Студент: Сикаченко Дмитрий Константинович
+Пользователь: eltex-v34
+Сервер 1: 217.71.138.1
+Сервер 2: 172.16.9.208
+
+РАЗДЕЛ 1. Управление процессами и сигналами
+
+Задание 1-3. Настройка утилиты top
+
+Выполнен вход под пользователем user1. Запущена утилита top. Для настройки
+отображаемых полей нажата клавиша f (Fields Management). Согласно заданию:
+
+1.  Удалены поля VIRT, RES, SHR (выбор стрелками, отключение клавишей d или
+    Space).
+2.  Добавлено поле RUSER (Real User Id).
+3.  С помощью стрелки вправо поле RUSER перемещено так, чтобы оно отображалось
+    сразу после поля USER.
+
+Вид настроенной утилиты top:
+
+top - 04:41:12 up 13:37,  1 user,  load average: 0.06, 0.04, 0.00
+Tasks: 117 total,   2 running, 115 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   3915.9 total,   3111.4 free,    434.7 used,    596.5 buff/cache
+MiB Swap:   3185.0 total,   3185.0 free,      0.0 used.   3481.2 avail Mem
+
+  PID USER      RUSER     PR  NI S  %CPU  %MEM     TIME+ COMMAND
+ 2558 user1     user1     20   0 S   0.0   0.1   0:00.01 bash
+ 2571 user1     user1     20   0 R   0.0   0.2   0:00.17 top
+  552 systemd+  systemd+  20   0 S   0.0   0.2   0:00.14 systemd-timesyn
+  551 systemd+  systemd+  20   0 S   0.0   0.3   0:00.14 systemd-resolve
+
+Задание 4-5. Работа с процессом passwd и отправка сигналов
+
+В отдельном окне терминала выполнено переключение на пользователя user1 и
+запущена утилита смены пароля passwd, которая оставлена в состоянии ожидания
+ввода.
+
+В окне с утилитой top выполнен фильтр по пользователю (клавиша u -> user1).
+Найден процесс passwd (PID 2683). С помощью клавиши k (kill) процессу passwd
+поочередно отправлены сигналы:
+
+  - 15 (SIGTERM)
+  - 2 (SIGINT)
+  - 3 (SIGQUIT)
+
+Данные сигналы игнорируются или перехватываются утилитой passwd в целях
+безопасности, поэтому процесс продолжил работу. Затем был отправлен сигнал 9
+(SIGKILL), который безусловно завершает процесс на уровне ядра.
+
+Вывод терминала с процессом passwd после получения SIGKILL:
+
+root@eltex-practice2-v34:~# su - user1
+user1@eltex-practice2-v34:~$ passwd
+Changing password for user1.
+Current password: Killed
+user1@eltex-practice2-v34:~$ 
+
+Задание 6-11 (Управление фоновыми задачами и приоритетами)
+
+1.  Запущен редактор vim ~/file_task3.txt и приостановлен комбинацией Ctrl-Z.
+2.  Запущена команда sleep 600 и также приостановлена Ctrl-Z.
+3.  Команда sleep 600 переведена в фоновый режим выполнения утилитой bg.
+
+Вывод терминала:
+
+user1@eltex-practice2-v34:~$ vim ~/file_task3.txt
+[1]+  Stopped                 vim ~/file_task3.txt
+user1@eltex-practice2-v34:~$ sleep 600
+^Z
+[2]+  Stopped                 sleep 600
+user1@eltex-practice2-v34:~$ jobs
+[1]-  Stopped                 vim ~/file_task3.txt
+[2]+  Stopped                 sleep 600
+user1@eltex-practice2-v34:~$ bg %2
+[2]+ sleep 600 &
+user1@eltex-practice2-v34:~$ jobs
+[1]+  Stopped                 vim ~/file_task3.txt
+[2]-  Running                 sleep 600 &
+
+4.  Изменен приоритет (NICE) процесса sleep (PID 2850) на значение 10 с помощью
+    renice.
+5.  Проверка изменения приоритета выполнена утилитой ps: статус процесса
+    изменился с S на SN (где N означает пониженный приоритет/повышенный nice).
+
+Вывод терминала:
+
+user1@eltex-practice2-v34:~$ ps aux | grep sleep
+user1       2850  0.0  0.0   5684  2172 pts/2    S    04:57   0:00 sleep 600
+user1@eltex-practice2-v34:~$ renice 10 -p 2850
+2850 (process ID) old priority 0, new priority 10
+user1@eltex-practice2-v34:~$ ps aux | grep sleep
+user1       2850  0.0  0.0   5684  2172 pts/2    SN   04:57   0:00 sleep 600
+
+6.  Задание sleep (PID 2850) завершено отправкой сигнала 15 (SIGTERM).
+
+Вывод терминала:
+
+user1@eltex-practice2-v34:~$ kill -15 2850
+[2]+  Terminated              sleep 600
+
+Задание 12. Перехват сигналов (trap)
+
+Внутри командного интерпретатора создано правило для перехвата сигналов SIGINT
+(Ctrl+C) и SIGQUIT (Ctrl+). При получении этих сигналов оболочка выводит
+заданное текстовое сообщение вместо прерывания своей работы. Сигналы отправлены
+самому себе через команду kill с указанием PID текущего интерпретатора ($$).
+
+Вывод терминала:
+
+user1@eltex-practice2-v34:~$ trap 'echo "Меня голыми руками не возьмёшь! :D"' SIGINT SIGQUIT
+user1@eltex-practice2-v34:~$ kill -SIGINT $$
+Меня голыми руками не возьмёшь! :D
+user1@eltex-practice2-v34:~$ kill -SIGQUIT $$
+Меня голыми руками не возьмёшь! :D
+
+РАЗДЕЛ 2. Автоматизация, IPC (именованные каналы) и Cron
+
+В рамках данного раздела разработана система из трех скриптов, взаимодействующих
+через именованный канал (pipe):
+
+  - cuckoo.sh — демон-диспетчер.
+  - template_task.sh — шаблон рабочей задачи (бригадир/рабочий).
+  - observer.sh — скрипт-наблюдатель, запускаемый по cron.
+
+Шаг 1. Запуск диспетчера (cuckoo.sh) и создание ссылок
+
+Скрипт cuckoo.sh запущен в отсоединенной сессии screen, чтобы он работал в
+фоновом режиме непрерывно. Проверено наличие сессии и создание ссылок на
+скрипт-шаблон с именами task_alpha, task_beta и task_gamma.
+
+Вывод терминала:
+
+root@eltex-practice2-v34:~# screen -ls
+There is a screen on:
+	2960.cuckoo	(07/10/2026 05:13:53 AM)	(Detached)
+1 Socket in /run/screen/S-root.
+
+root@eltex-practice2-v34:~# ln -s /root/template_task.sh /root/task_alpha
+root@eltex-practice2-v34:~# ln -s /root/template_task.sh /root/task_beta
+root@eltex-practice2-v34:~# ln -s /root/template_task.sh /root/task_gamma
+
+Примечание: при попытке запустить template_task.sh напрямую, он выводит
+уведомление «я бригадир, сам не работаю» и завершается, как того требует
+задание.
+
+Шаг 2. Настройка планировщика Cron
+
+Скрипт observer.sh, проверяющий наличие запущенных задач и перезапускающий их в
+случае падения, добавлен в планировщик задач пользователя root для выполнения
+ежеминутно.
+
+Содержимое crontab -e:
+
+# m h  dom mon dow   command
+* * * * * /root/observer.sh
+
+Шаг 3. Анализ логов работы системы
+
+После запуска observer поднял все задачи в фоновом режиме (nohup). Задачи
+успешно связываются со скриптом cuckoo.sh через именованный канал
+/tmp/run/cuckoo.pid, запрашивают время работы и получают случайное число секунд
+от 2 до 10.
+
+Вывод лога observer.log:
+
+root@eltex-practice2-v34:~# cat /root/observer.log
+2026-07-10 05:23:01 template_task.sh not running, starting...
+2026-07-10 05:23:01 task_alpha not running, starting...
+2026-07-10 05:23:01 task_beta not running, starting...
+2026-07-10 05:23:02 task_gamma not running, starting...
+
+Вывод лога диспетчера cuckoo.log:
+
+root@eltex-practice2-v34:~# cat /root/cuckoo.log
+2026-07-10 05:13:53 Startup!
+2026-07-10 05:17:30 task_alpha[2995] 5
+2026-07-10 05:17:35 task_alpha[3004] 9
+2026-07-10 05:23:01 task_alpha[4264] 7
+2026-07-10 05:23:01 task_beta[4872] 6
+2026-07-10 05:23:02 task_gamma[5493] 9
+...
+
+Шаг 4. Остановка системы и архивация отчета
+
+Для корректного завершения работы диспетчеру cuckoo.sh был отправлен сигнал
+SIGTERM, после чего он записал статус Shutdown! в лог и завершился. Задача из
+cron была удалена.
+
+Все исходные тексты скриптов и логи были собраны в единый сжатый архив формата
+tar.gz для сдачи.
+
+Вывод терминала:
+
+root@eltex-practice2-v34:~# pkill -SIGTERM -f cuckoo.sh
+root@eltex-practice2-v34:~# ls -lh task3_report.tar.gz
+-rw-r--r-- 1 root root 65K Jul 10 05:32 task3_report.tar.gz
