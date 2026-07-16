@@ -5,13 +5,13 @@
 #include <string.h>
 
 int choice;
-char input_buf[10];
+char input_buf[5];
 
 int main() {
   while (1) {
     show_menu();
 
-    read_input(input_buf, 10);
+    read_input(input_buf, 5);
     choice = atoi(input_buf);
 
     switch (choice) {
@@ -27,7 +27,7 @@ int main() {
       break;
     case 3:
       system("clear");
-      draw_header("Contact Editing", NULL);
+      edit_contact();
       wait_enter();
       break;
     case 4:
@@ -40,9 +40,6 @@ int main() {
       return 0;
       break;
     default:
-      system("clear");
-      printf(TXT_RED "No such option/wrong input, try again!\n" RESET);
-      wait_enter();
       break;
     }
   };

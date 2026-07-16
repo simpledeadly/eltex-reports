@@ -92,6 +92,74 @@ void add_contact() {
   printf(TXT_GREEN "\nContact successfully saved!" RESET "\n");
 }
 
+void edit_contact() {
+  draw_header("Contact editting", TXT_GREEN);
+
+  if (contact_count == 0) {
+    printf(" Add contacts first.\n");
+    return;
+  }
+
+  show_contacts();
+
+  char buffer[50];
+  printf("\n Enter contact ID for editting: ");
+  read_input(buffer, 5);
+
+  int id = atoi(buffer);
+  if (id < 1 || id > contact_count) {
+    printf(TXT_RED " No such ID." RESET "\n");
+    return;
+  }
+
+  int index = id - 1;
+  draw_header("Editing...", TXT_GREEN);
+
+  printf(" Old name: %s\n", phonebook[index].name);
+  printf(" Enter new name (or press Enter to save old): ");
+  read_input(buffer, 50);
+  if (strlen(buffer) > 0) {
+    strcpy(phonebook[index].name, buffer);
+  }
+
+  printf(" Old surname: %s\n", phonebook[index].surname);
+  printf(" Enter new surname (or press Enter to save old): ");
+  read_input(buffer, 50);
+  if (strlen(buffer) > 0) {
+    strcpy(phonebook[index].surname, buffer);
+  }
+
+  printf(" Old phone: %s\n", phonebook[index].phone);
+  printf(" Enter new phone (or press Enter to save old): ");
+  read_input(buffer, 50);
+  if (strlen(buffer) > 0) {
+    strcpy(phonebook[index].phone, buffer);
+  }
+
+  printf(" Old gh_link: %s\n", phonebook[index].gh_link);
+  printf(" Enter new gh_link (or press Enter to save old): ");
+  read_input(buffer, 50);
+  if (strlen(buffer) > 0) {
+    strcpy(phonebook[index].gh_link, buffer);
+  }
+
+  printf(" Old job role: %s\n", phonebook[index].job_role);
+  printf(" Enter new job role (or press Enter to save old): ");
+  read_input(buffer, 50);
+  if (strlen(buffer) > 0) {
+    strcpy(phonebook[index].job_role, buffer);
+  }
+
+  printf(" Old employer: %s\n", phonebook[index].employer);
+  printf(" Enter new employer (or press Enter to save old): ");
+  read_input(buffer, 50);
+  if (strlen(buffer) > 0) {
+    strcpy(phonebook[index].employer, buffer);
+  }
+
+  printf(TXT_GREEN "\n Contact successfully updated!" RESET "\n");
+}
+
 void delete_contact() {
   draw_header("Contact deletion", TXT_RED);
 

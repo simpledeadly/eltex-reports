@@ -13,6 +13,7 @@ struct Contact {
 
 void show_contacts();
 void add_contact();
+void edit_contact();
 void delete_contact();
 
 #endif
