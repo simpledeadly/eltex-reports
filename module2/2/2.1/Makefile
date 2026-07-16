@@ -1,7 +1,7 @@
 all: build run
 
-build: main.c tui.c
-	gcc -Wall main.c tui.c -o main
+build: main.c tui.c phonebook.c
+	gcc -Wall main.c tui.c phonebook.c -o main
 
 run: build
 	./main
