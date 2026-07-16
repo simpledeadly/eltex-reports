@@ -6,3 +6,10 @@ sources
 archive
 module2_src
 .agents
+*.o
+*.a
+*.lib
+main
+a.out
+test_runner
+bin/
