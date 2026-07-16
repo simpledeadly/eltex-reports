@@ -49,7 +49,6 @@ void show_contacts() {
 
 void add_contact() {
   draw_header("New contact", TXT_GREEN);
-  getchar();
 
   char buffer[50];
 

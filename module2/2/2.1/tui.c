@@ -6,7 +6,6 @@
 void wait_enter() {
   printf("\nPress Enter to continue...");
   getchar();
-  getchar();
   system("clear");
 }
 

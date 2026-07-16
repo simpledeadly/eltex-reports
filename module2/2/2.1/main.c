@@ -5,11 +5,15 @@
 #include <string.h>
 
 int choice;
+char input_buf[10];
 
 int main() {
   while (1) {
     show_menu();
-    scanf("%d", &choice);
+
+    read_input(input_buf, 10);
+    choice = atoi(input_buf);
+
     switch (choice) {
     case 1:
       system("clear");
