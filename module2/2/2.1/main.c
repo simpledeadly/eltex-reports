@@ -62,7 +62,10 @@ void read_input(char *buffer, int max_len) {
 }
 
 void show_contacts() {
-  draw_header("All Contacts", TXT_GREEN);
+  char title_buffer[50];
+  snprintf(title_buffer, 50, "All Contacts (Total: %d)", contact_count);
+
+  draw_header(title_buffer, TXT_GREEN);
 
   if (contact_count == 0) {
     printf(" No contacts.\n");
