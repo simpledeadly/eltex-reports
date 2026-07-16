@@ -9,6 +9,7 @@ int contact_count = 0;
 struct Contact {
   char name[50];
   char surname[50];
+  char phone[50];
   char email[50];
   char gh_link[50];
   char job_role[50];
@@ -36,6 +37,9 @@ void show_contacts() {
     printf(" │ Name:     %-26s │\n", phonebook[i].name);
     printf(" │ Surname:  %-26s │\n", phonebook[i].surname);
 
+    if (strlen(phonebook[i].phone) > 0) {
+      printf(" │ Phone:    %-26s │\n", phonebook[i].phone);
+    }
     if (strlen(phonebook[i].email) > 0) {
       printf(" │ Email:    %-26s │\n", phonebook[i].email);
     }
@@ -74,6 +78,10 @@ void add_contact() {
       break;
   }
   strcpy(phonebook[contact_count].surname, buffer);
+
+  printf(" Enter phone number (optional): ");
+  read_input(buffer, 50);
+  strcpy(phonebook[contact_count].phone, buffer);
 
   printf(" Enter email (optional): ");
   read_input(buffer, 50);
