@@ -32,7 +32,7 @@ int main() {
       break;
     case 4:
       system("clear");
-      printf(TXT_RED "Контакт удален. Нажмите Enter для возврата в меню...\n");
+      delete_contact();
       wait_enter();
       break;
     case 5:
@@ -41,7 +41,7 @@ int main() {
       break;
     default:
       system("clear");
-      printf("No such option/wrong input, try again!\n\n");
+      printf(TXT_RED "No such option/wrong input, try again!\n" RESET);
       wait_enter();
       break;
     }

@@ -91,3 +91,33 @@ void add_contact() {
   contact_count++;
   printf(TXT_GREEN "\nContact successfully saved!" RESET "\n");
 }
+
+void delete_contact() {
+  draw_header("Contact deletion", TXT_RED);
+
+  if (contact_count == 0) {
+    printf(" Add contacts first.\n");
+    return;
+  }
+
+  show_contacts();
+
+  printf("\n Enter contact ID for deletion: ");
+
+  char buffer[5];
+  read_input(buffer, 5);
+  int id = atoi(buffer);
+
+  if (id < 1 || id > contact_count) {
+    printf(TXT_RED " No such ID." RESET "\n");
+    return;
+  }
+
+  int index = id - 1;
+  for (int i = index; i < contact_count - 1; i++) {
+    phonebook[i] = phonebook[i + 1];
+  }
+
+  contact_count--;
+  printf(TXT_GREEN "\n Contact deleted." RESET "\n");
+}
