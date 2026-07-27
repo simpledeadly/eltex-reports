@@ -98,6 +98,24 @@ int main() {
       }
 
     } else if (strcmp(buffer, "2") == 0) {
+      printf("\n Enter filename: ");
+      read_input(buffer, sizeof(buffer));
+
+      struct stat st;
+      if (stat(buffer, &st) == 0) {
+        current_mode = st.st_mode & 0777;
+        mode_set = 1;
+
+        printf("\n stat() says:\n");
+        print_mode_info(current_mode);
+
+        printf("\n Comparing with " TXT_GREEN "`ls -l`" RESET ":\n");
+        char cmd[512];
+        snprintf(cmd, sizeof(cmd), "ls -l \"%s\"", buffer);
+        system(cmd);
+
+        wait_enter();
+      }
     } else if (strcmp(buffer, "3") == 0) {
     } else if (strcmp(buffer, "4") == 0) {
       break;
