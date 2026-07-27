@@ -4,7 +4,11 @@
 brevis
 sources
 archive
+module1_src
 module2_src
+module3_src
+module4_src
+module5_src
 .agents
 *.o
 *.a
