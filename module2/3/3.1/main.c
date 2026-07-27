@@ -24,6 +24,33 @@ void print_mode_info(mode_t mode) {
   printf("\n");
 }
 
+mode_t parse_string_mode(const char *str) {
+  mode_t mode = 0;
+
+  if (strlen(str) >= 9) {
+    if (str[0] == 'r')
+      mode |= S_IRUSR;
+    if (str[1] == 'w')
+      mode |= S_IWUSR;
+    if (str[2] == 'x')
+      mode |= S_IXUSR;
+    if (str[3] == 'r')
+      mode |= S_IRGRP;
+    if (str[4] == 'w')
+      mode |= S_IWGRP;
+    if (str[5] == 'x')
+      mode |= S_IXGRP;
+    if (str[6] == 'r')
+      mode |= S_IROTH;
+    if (str[7] == 'w')
+      mode |= S_IWOTH;
+    if (str[8] == 'x')
+      mode |= S_IXOTH;
+  }
+
+  return mode;
+}
+
 int main() {
   char buffer[256];
   mode_t current_mode = 0;
@@ -55,8 +82,7 @@ int main() {
       read_input(buffer, sizeof(buffer));
 
       if (strlen(buffer) == 9 && (buffer[0] == 'r' || buffer[0] == '-')) {
-        current_mode = 2;
-        // current_mode = parse_string_mode(buffer);
+        current_mode = parse_string_mode(buffer);
         mode_set = 1;
       } else {
         char *endptr;
