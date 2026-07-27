@@ -51,6 +51,61 @@ mode_t parse_string_mode(const char *str) {
   return mode;
 }
 
+mode_t apply_chmod(mode_t mode, const char *mod_str) {
+  mode_t target_mask = 0;
+  mode_t perm_mask = 0;
+  char op = 0;
+  int i = 0;
+
+  // define for whom we wanna change rights (u/g/o/a)
+  while (mod_str[i] != '\0' && strchr("ugoa", mod_str[i])) {
+    if (mod_str[i] == 'u')
+      target_mask |= 0700;
+    if (mod_str[i] == 'g')
+      target_mask |= 0070;
+    if (mod_str[i] == 'o')
+      target_mask |= 0007;
+    if (mod_str[i] == 'a')
+      target_mask |= 0777;
+    i++;
+  }
+  if (target_mask == 0) {
+    target_mask = 0777;
+  }
+
+  if (mod_str[i] == '+' || mod_str[i] == '-' || mod_str[i] == '=') {
+    op = mod_str[i];
+    i++;
+  } else {
+    printf(" No operator (+, -, =)\n");
+    return mode;
+  }
+
+  // rights (r,w,x)
+  while (mod_str[i] != '\0') {
+    if (mod_str[i] == 'r')
+      perm_mask |= 0444;
+    if (mod_str[i] == 'w')
+      perm_mask |= 0222;
+    if (mod_str[i] == 'x')
+      perm_mask |= 0111;
+    i++;
+  }
+
+  mode_t apply_mask = target_mask & perm_mask;
+
+  if (op == '+') {
+    mode |= apply_mask;
+  } else if (op == '-') {
+    mode &= ~apply_mask;
+  } else if (op == '=') {
+    mode &= ~target_mask;
+    mode |= apply_mask;
+  }
+
+  return mode;
+}
+
 int main() {
   char buffer[256];
   mode_t current_mode = 0;
@@ -96,7 +151,6 @@ int main() {
           wait_enter();
         }
       }
-
     } else if (strcmp(buffer, "2") == 0) {
       printf("\n Enter filename: ");
       read_input(buffer, sizeof(buffer));
@@ -117,10 +171,24 @@ int main() {
         wait_enter();
       }
     } else if (strcmp(buffer, "3") == 0) {
+      if (!mode_set) {
+        printf(TXT_RED "\n Firstly set rights (try 1 or 2 options).\n" RESET);
+        wait_enter();
+        continue;
+      }
+
+      printf("\n Enter changes (e.g. u+x, a=rw, g-w): ");
+      read_input(buffer, sizeof(buffer));
+
+      current_mode = apply_chmod(current_mode, buffer);
+      printf("\n New rights:\n");
+      print_mode_info(current_mode);
+
+      wait_enter();
     } else if (strcmp(buffer, "4") == 0) {
       break;
     } else {
-      printf(TXT_RED "\n Wrong choice.\n" RESET);
+      printf(TXT_RED "\n There is no a such option.\n" RESET);
       wait_enter();
     }
   }
