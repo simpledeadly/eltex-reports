@@ -53,5 +53,22 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  printf("\n———————— Statistics ————————\n");
+  printf("Total packets: %d\n", count);
+  printf("Gateway IP:     ");
+  print_ip(gw);
+  printf("\n");
+  printf("Subnet mask:    ");
+  print_ip(mask);
+  printf("\n");
+  printf("Network ADDR:   ");
+  print_ip(network_addr);
+  printf("\n");
+  printf("Local subnet:   %d (%.2f%%)\n", own_count,
+         (double)own_count / count * 100.0);
+  printf("Other subnets:  %d (%.2f%%)\n", other_count,
+         (double)other_count / count * 100.0);
+  printf("————————————————————————————\n");
+
   return 0;
 }
