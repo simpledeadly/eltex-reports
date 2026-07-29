@@ -34,5 +34,24 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  uint32_t network_addr = gw & mask;
+
+  srand(time(NULL));
+
+  int own_count = 0;
+  int other_count = 0;
+
+  for (int i = 0; i < count; i++) {
+    uint32_t random_ip =
+        ((uint32_t)(rand() & 0xFF) << 24 | (uint32_t)(rand() & 0xFF) << 16 |
+         (uint32_t)(rand() & 0xFF) << 8 | (uint32_t)(rand() & 0xFF));
+
+    if ((random_ip & mask) == network_addr) {
+      own_count++;
+    } else {
+      other_count++;
+    }
+  }
+
   return 0;
 }
