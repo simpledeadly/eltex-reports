@@ -20,5 +20,14 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  uint32_t gw = parse_ip(argv[1]);
+  uint32_t mask = parse_ip(argv[2]);
+  int count = atoi(argv[3]);
+
+  if (count <= 0) {
+    printf("Packet quantity must be greater than 0.\n");
+    return 1;
+  }
+
   return 0;
 }
