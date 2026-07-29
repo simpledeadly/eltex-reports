@@ -14,6 +14,11 @@ uint32_t parse_ip(const char *ip_str) {
   return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
 }
 
+void print_ip(uint32_t ip) {
+  printf("%u.%u.%u.%u", (ip >> 24) & 0xFF, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF,
+         ip & 0xFF);
+}
+
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     printf("Usage: %s <ip_gateway> <subnet_mask> <packet_quantity>\n", argv[0]);
