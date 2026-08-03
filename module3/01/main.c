@@ -67,5 +67,19 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  pid_t pid = fork();
+  if (pid == -1) {
+    perror("fork");
+    exit(EXIT_FAILURE);
+  }
+
+  if (pid == 0) {
+    printf("[Child] Child process started\n");
+    exit(EXIT_SUCCESS);
+  } else {
+    printf("[Parent] Parent created child process with PID = %d\n", pid);
+    waitpid(pid, NULL, 0);
+  }
+
   return 0;
 }
