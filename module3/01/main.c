@@ -179,6 +179,41 @@ int main(int argc, char *argv[]) {
       }
       write_fd = open_write;
     }
+
+    for (int i = optind; i < argc; i++) {
+      const char *filepath = argv[i];
+
+      struct stat st;
+      int res_stat = stat(filepath, &st);
+      if (res_stat == -1) {
+        fprintf(stderr, "[Parent] Error: File '%s' not found.\n", filepath);
+        continue;
+      }
+
+      char ack;
+      read(read_fd, &ack, 1);
+
+      struct FileHeader header;
+      memset(&header, 0, sizeof(header));
+      strncpy(header.filename, filepath, sizeof(header.filename) - 1);
+      header.filesize = st.st_size;
+
+      write(write_fd, &header, sizeof(header));
+
+      int in_fd = open(filepath, O_RDONLY);
+      if (in_fd == -1) {
+        perror("[Parent] open source file");
+        continue;
+      }
+      char buffer[512];
+      ssize_t bytes_read;
+      while ((bytes_read = read(in_fd, buffer, sizeof(buffer))) > 0) {
+        write(write_fd, buffer, bytes_read);
+      }
+      close(in_fd);
+      printf("[Parent] Sent file: %s (%ld bytes)\n", filepath,
+             (long)st.st_size);
+    }
   }
 
   return 0;
