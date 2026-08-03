@@ -214,6 +214,24 @@ int main(int argc, char *argv[]) {
       printf("[Parent] Sent file: %s (%ld bytes)\n", filepath,
              (long)st.st_size);
     }
+
+    char ack;
+    read(read_fd, &ack, 1);
+    struct FileHeader stop_header;
+    memset(&stop_header, 0, sizeof(stop_header));
+    stop_header.filesize = -1;
+    write(write_fd, &stop_header, sizeof(stop_header));
+
+    close(read_fd);
+    close(write_fd);
+
+    waitpid(pid, NULL, 0);
+
+    if (fifo_name != NULL) {
+      unlink(fifo_name);
+      unlink(fifo_c2p_name);
+    }
+    printf("[Parent] All files transferred. Child finished.\n");
   }
 
   return 0;
