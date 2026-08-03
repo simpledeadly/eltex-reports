@@ -7,6 +7,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+struct FileHeader {
+  char filename[256];
+  long filesize;
+};
+
 int main(int argc, char *argv[]) {
   char *fifo_name = NULL;
   int opt;
@@ -102,6 +107,49 @@ int main(int argc, char *argv[]) {
       }
       read_fd = open_read;
     }
+
+    while (1) {
+      write(write_fd, "R", 1);
+
+      struct FileHeader header;
+      read(read_fd, &header, sizeof(header));
+
+      if (header.filesize == -1) {
+        break;
+      }
+
+      char out_name[300];
+      snprintf(out_name, sizeof(out_name), "%s.copy", header.filename);
+
+      int out_fd = open(out_name, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+      if (out_fd == -1) {
+        perror("Child open out_fd");
+        exit(EXIT_FAILURE);
+      }
+
+      char buffer[512];
+      long remaining = header.filesize;
+
+      while (remaining > 0) {
+        long to_read = sizeof(buffer);
+        if (remaining < to_read) {
+          to_read = remaining;
+        }
+        ssize_t bytes_read = read(read_fd, buffer, to_read);
+        if (bytes_read <= 0) {
+          break;
+        }
+        write(out_fd, buffer, bytes_read);
+        remaining -= bytes_read;
+      }
+      close(out_fd);
+      printf("[Child] Saved file: %s (%ld bytes)\n", out_name, header.filesize);
+    }
+
+    close(read_fd);
+    close(write_fd);
+    printf("[Child] All files received. Exiting.\n");
+    exit(EXIT_SUCCESS);
   } else {
     printf("[Parent] Parent created child process with PID = %d\n", pid);
 
