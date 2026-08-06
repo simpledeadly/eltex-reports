@@ -107,6 +107,9 @@ int main(int argc, char *argv[]) {
 
   while (running && fgets(buf, sizeof(buf), stdin)) {
     buf[strcspn(buf, "\n")] = '\0';
+    /* explanation of line 109:
+    fgets includes '\n' from stdin, when user pressed Enter.
+    Replace it with '\0' to avoid extra newline in the sent message. */
     if (!running)
       break;
     if (mq_send(mq_out, buf, strlen(buf) + 1, 1) < 0) {
