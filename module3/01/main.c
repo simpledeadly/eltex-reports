@@ -109,12 +109,16 @@ int main(int argc, char *argv[]) {
     }
 
     while (1) {
-      write(write_fd, "R", 1);
+      if (write(write_fd, "R", 1) < 0) {
+        perror("write ACK");
+        break;
+      }
 
       struct FileHeader header;
-      read(read_fd, &header, sizeof(header));
-
-      if (header.filesize == -1) {
+      if (read(read_fd, &header, sizeof(header)) <= 0 ||
+          header.filesize == -1) {
+        // n == -1: read error
+        // n == 0; parent closed pipe, eof
         break;
       }
 
@@ -139,7 +143,11 @@ int main(int argc, char *argv[]) {
         if (bytes_read <= 0) {
           break;
         }
-        write(out_fd, buffer, bytes_read);
+        ssize_t bytes_written = write(out_fd, buffer, bytes_read);
+        if (bytes_written < 0) {
+          perror("[Child] write to file");
+          break;
+        }
         remaining -= bytes_read;
       }
       close(out_fd);
@@ -198,7 +206,10 @@ int main(int argc, char *argv[]) {
       strncpy(header.filename, filepath, sizeof(header.filename) - 1);
       header.filesize = st.st_size;
 
-      write(write_fd, &header, sizeof(header));
+      if (write(write_fd, &header, sizeof(header)) < 0) {
+        perror("[Parent] write header");
+        break;
+      }
 
       int in_fd = open(filepath, O_RDONLY);
       if (in_fd == -1) {
@@ -208,7 +219,10 @@ int main(int argc, char *argv[]) {
       char buffer[512];
       ssize_t bytes_read;
       while ((bytes_read = read(in_fd, buffer, sizeof(buffer))) > 0) {
-        write(write_fd, buffer, bytes_read);
+        if (write(write_fd, buffer, bytes_read) < 0) {
+          perror("[Parent] write data");
+          break;
+        }
       }
       close(in_fd);
       printf("[Parent] Sent file: %s (%ld bytes)\n", filepath,
@@ -216,11 +230,17 @@ int main(int argc, char *argv[]) {
     }
 
     char ack;
-    read(read_fd, &ack, 1);
     struct FileHeader stop_header;
     memset(&stop_header, 0, sizeof(stop_header));
     stop_header.filesize = -1;
-    write(write_fd, &stop_header, sizeof(stop_header));
+
+    if (read(read_fd, &ack, 1) <= 0) {
+      fprintf(stderr, "[Parent] Failed to read final ACK.\n");
+    } else {
+      if (write(write_fd, &stop_header, sizeof(stop_header)) < 0) {
+        perror("[Parent] write stop header");
+      }
+    }
 
     close(read_fd);
     close(write_fd);
