@@ -48,6 +48,39 @@ void show_contacts() {
   }
 }
 
+void delete_contact() {
+  if (head == NULL) {
+    printf("Phonebook is empty.\n");
+    return;
+  }
+  show_contacts();
+  printf("Enter number to delete: ");
+
+  char buf[8];
+  fgets(buf, sizeof(buf), stdin);
+  int n = atoi(buf);
+
+  Contact *current = head;
+  for (int i = 1; i < n && current != NULL; i++) {
+    current = current->next;
+  }
+  if (current == NULL) {
+    printf("Invalid number.\n");
+    return;
+  }
+
+  if (current->prev != NULL) {
+    current->prev->next = current->next;
+  } else {
+    head = current->next;
+  }
+  if (current->next != NULL) {
+    current->next->prev = current->prev;
+  }
+
+  free(current);
+  printf("Deleted.\n");
+}
+
 void edit_contact(void) {}
-void delete_contact(void) {}
 void clear_phonebook(void) {}
