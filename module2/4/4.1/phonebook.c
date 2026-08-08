@@ -111,4 +111,18 @@ void edit_contact() {
   printf("Updated.\n");
 }
 
-void clear_phonebook(void) {}
+void clear_phonebook() {
+  Contact *current = head;
+  while (current != NULL) {
+    Contact *next = current->next;
+    free(current);
+    current = next;
+  }
+  head = NULL;
+}
+
+/* No memory leaks
+leaks Report Version: 4.0, multi-line stacks
+Process 1803: 190 nodes malloced for 23 KB
+Process 1803: 0 leaks for 0 total leaked bytes.
+*/
