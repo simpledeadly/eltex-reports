@@ -35,9 +35,7 @@ void show_menu() {
 };
 
 void read_input(char *buffer, int max_len) {
-  fgets(buffer, max_len, stdin);
-  size_t len = strlen(buffer);
-  if (len > 0 && buffer[len - 1] == '\n') {
-    buffer[len - 1] = '\0';
+  if (fgets(buffer, max_len, stdin)) {
+    buffer[strcspn(buffer, "\n")] = '\0';
   }
 }
