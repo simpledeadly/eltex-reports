@@ -8,6 +8,31 @@ int contact_count = 0;
 
 struct Contact phonebook[100];
 
+int add_contact_record(struct Contact c) {
+  if (contact_count >= 100)
+    return -1;
+  phonebook[contact_count] = c;
+  contact_count++;
+  return 0;
+}
+
+int edit_contact_record(int index, struct Contact c) {
+  if (index < 0 || index >= contact_count)
+    return -1;
+  phonebook[index] = c;
+  return 0;
+}
+
+int delete_contact_record(int index) {
+  if (index < 0 || index >= contact_count)
+    return -1;
+  for (int i = index; i < contact_count - 1; i++) {
+    phonebook[i] = phonebook[i + 1];
+  }
+  contact_count--;
+  return 0;
+}
+
 void show_contacts() {
   char title_buffer[50];
   snprintf(title_buffer, 50, "All Contacts (Total: %d)", contact_count);
@@ -50,6 +75,8 @@ void show_contacts() {
 void add_contact() {
   draw_header("New contact", TXT_GREEN);
 
+  struct Contact c;
+  memset(&c, 0, sizeof(c));
   char buffer[50];
 
   while (1) {
@@ -58,7 +85,7 @@ void add_contact() {
     if (strlen(buffer) > 0)
       break;
   }
-  strcpy(phonebook[contact_count].name, buffer);
+  strcpy(c.name, buffer);
 
   while (1) {
     printf(" Enter surname (required): ");
@@ -66,30 +93,33 @@ void add_contact() {
     if (strlen(buffer) > 0)
       break;
   }
-  strcpy(phonebook[contact_count].surname, buffer);
+  strcpy(c.surname, buffer);
 
   printf(" Enter phone number (optional): ");
   read_input(buffer, 50);
-  strcpy(phonebook[contact_count].phone, buffer);
+  strcpy(c.phone, buffer);
 
   printf(" Enter email (optional): ");
   read_input(buffer, 50);
-  strcpy(phonebook[contact_count].email, buffer);
+  strcpy(c.email, buffer);
 
   printf(" Enter GitHub link (optional): ");
   read_input(buffer, 50);
-  strcpy(phonebook[contact_count].gh_link, buffer);
+  strcpy(c.gh_link, buffer);
 
   printf(" Enter job role (optional): ");
   read_input(buffer, 50);
-  strcpy(phonebook[contact_count].job_role, buffer);
+  strcpy(c.job_role, buffer);
 
   printf(" Enter employer (optional): ");
   read_input(buffer, 50);
-  strcpy(phonebook[contact_count].employer, buffer);
+  strcpy(c.employer, buffer);
 
-  contact_count++;
-  printf(TXT_GREEN "\nContact successfully saved!" RESET "\n");
+  if (add_contact_record(c) == 0) {
+    printf(TXT_GREEN "\nContact successfully saved!" RESET "\n");
+  } else {
+    printf(TXT_RED "\nPhonebook is full!" RESET "\n");
+  }
 }
 
 void edit_contact() {
@@ -113,51 +143,50 @@ void edit_contact() {
   }
 
   int index = id - 1;
+  struct Contact c = phonebook[index];
   draw_header("Editing...", TXT_GREEN);
 
-  printf(" Old name: %s\n", phonebook[index].name);
+  printf(" Old name: %s\n", c.name);
   printf(" Enter new name (or press Enter to save old): ");
   read_input(buffer, 50);
-  if (strlen(buffer) > 0) {
-    strcpy(phonebook[index].name, buffer);
-  }
+  if (strlen(buffer) > 0)
+    strcpy(c.name, buffer);
 
-  printf(" Old surname: %s\n", phonebook[index].surname);
+  printf(" Old surname: %s\n", c.surname);
   printf(" Enter new surname (or press Enter to save old): ");
   read_input(buffer, 50);
-  if (strlen(buffer) > 0) {
-    strcpy(phonebook[index].surname, buffer);
-  }
+  if (strlen(buffer) > 0)
+    strcpy(c.surname, buffer);
 
-  printf(" Old phone: %s\n", phonebook[index].phone);
+  printf(" Old phone: %s\n", c.phone);
   printf(" Enter new phone (or press Enter to save old): ");
   read_input(buffer, 50);
-  if (strlen(buffer) > 0) {
-    strcpy(phonebook[index].phone, buffer);
-  }
+  if (strlen(buffer) > 0)
+    strcpy(c.phone, buffer);
 
-  printf(" Old gh_link: %s\n", phonebook[index].gh_link);
+  printf(" Old gh_link: %s\n", c.gh_link);
   printf(" Enter new gh_link (or press Enter to save old): ");
   read_input(buffer, 50);
-  if (strlen(buffer) > 0) {
-    strcpy(phonebook[index].gh_link, buffer);
-  }
+  if (strlen(buffer) > 0)
+    strcpy(c.gh_link, buffer);
 
-  printf(" Old job role: %s\n", phonebook[index].job_role);
+  printf(" Old job role: %s\n", c.job_role);
   printf(" Enter new job role (or press Enter to save old): ");
   read_input(buffer, 50);
-  if (strlen(buffer) > 0) {
-    strcpy(phonebook[index].job_role, buffer);
-  }
+  if (strlen(buffer) > 0)
+    strcpy(c.job_role, buffer);
 
-  printf(" Old employer: %s\n", phonebook[index].employer);
+  printf(" Old employer: %s\n", c.employer);
   printf(" Enter new employer (or press Enter to save old): ");
   read_input(buffer, 50);
-  if (strlen(buffer) > 0) {
-    strcpy(phonebook[index].employer, buffer);
-  }
+  if (strlen(buffer) > 0)
+    strcpy(c.employer, buffer);
 
-  printf(TXT_GREEN "\n Contact successfully updated!" RESET "\n");
+  if (edit_contact_record(index, c) == 0) {
+    printf(TXT_GREEN "\n Contact successfully updated!" RESET "\n");
+  } else {
+    printf(TXT_RED "\n Failed to update." RESET "\n");
+  }
 }
 
 void delete_contact() {
@@ -182,10 +211,9 @@ void delete_contact() {
   }
 
   int index = id - 1;
-  for (int i = index; i < contact_count - 1; i++) {
-    phonebook[i] = phonebook[i + 1];
+  if (delete_contact_record(index) == 0) {
+    printf(TXT_GREEN "\n Contact deleted." RESET "\n");
+  } else {
+    printf(TXT_RED "\n Failed to delete." RESET "\n");
   }
-
-  contact_count--;
-  printf(TXT_GREEN "\n Contact deleted." RESET "\n");
 }

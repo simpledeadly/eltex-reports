@@ -15,7 +15,11 @@ tui.o: lib/tui.c
 main: main.c lib/libphonebook.dylib
 	$(CC) $(CFLAGS) main.c -Ilib -L./lib -lphonebook -Wl,-rpath,./lib -o main
 
-clean:
-	rm -f main *.o *.a lib/*.a lib/*.dylib
+test: test.c lib/libphonebook.dylib
+	$(CC) $(CFLAGS) test.c -Ilib -L./lib -lphonebook -Wl,-rpath,./lib -I/opt/homebrew/include -L/opt/homebrew/lib -lcunit -o test
+	./test
 
-.PHONY: all clean
+clean:
+	rm -f main test *.o *.a lib/*.a lib/*.dylib
+
+.PHONY: all clean test

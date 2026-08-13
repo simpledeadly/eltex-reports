@@ -1,13 +1,19 @@
 #ifndef PHONEBOOK_H
 #define PHONEBOOK_H
 
-// самореферентная структура
 typedef struct Contact {
   char name[64];
   char phone[32];
   struct Contact *next;
   struct Contact *prev;
 } Contact;
+
+// Чистые функции для тестов и бизнес-логики
+Contact *get_head();
+int add_contact_record(const char *name, const char *phone);
+int delete_contact_record(int index);
+int edit_contact_record(int index, const char *new_name, const char *new_phone);
+void clear_phonebook_records();
 
 void show_contacts();
 void add_contact();

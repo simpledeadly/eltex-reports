@@ -11,10 +11,14 @@ all: main $(PLUGIN_BINS)
 $(PLUGIN_DIR)/lib%.dylib: %.c
 	$(CC) $(CFLAGS) -fPIC -shared $< -o $@
 
-main: main.c tui.c
-	$(CC) $(CFLAGS) main.c tui.c -o main
+main: main.c plugin_logic.c tui.c
+	$(CC) $(CFLAGS) main.c plugin_logic.c tui.c -o main
+
+test: test.c plugin_logic.c $(PLUGIN_BINS)
+	$(CC) $(CFLAGS) test.c plugin_logic.c -I/opt/homebrew/include -L/opt/homebrew/lib -lcunit -o test
+	./test
 
 clean:
-	rm -f main $(PLUGIN_DIR)/*.dylib
+	rm -f main test $(PLUGIN_DIR)/*.dylib
 
-.PHONY: all clean
+.PHONY: all clean test

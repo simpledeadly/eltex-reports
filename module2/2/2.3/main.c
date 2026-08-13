@@ -1,17 +1,12 @@
+#include "calc.h"
 #include "tui.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-double add(double a, double b) { return a + b; }
-double subtract(double a, double b) { return a - b; }
-double multiply(double a, double b) { return a * b; }
-double divide(double a, double b) { return a / b; }
 
 int main() {
   char input_buf[20];
   int choice;
   double a, b;
-  double (*operations[4])(double, double) = {add, subtract, multiply, divide};
 
   while (1) {
     show_menu();

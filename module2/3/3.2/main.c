@@ -1,19 +1,8 @@
+#include "subnet_logic.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-uint32_t parse_ip(const char *ip_str) {
-  unsigned int bytes[4];
-
-  if (sscanf(ip_str, "%u.%u.%u.%u", &bytes[0], &bytes[1], &bytes[2],
-             &bytes[3]) != 4) {
-    printf("Wrong IP format: %s\n", ip_str);
-    exit(1);
-  }
-  return (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
-}
-
 void print_ip(uint32_t ip) {
   printf("%u.%u.%u.%u", (ip >> 24) & 0xFF, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF,
          ip & 0xFF);
@@ -29,12 +18,17 @@ int main(int argc, char *argv[]) {
   uint32_t mask = parse_ip(argv[2]);
   int count = atoi(argv[3]);
 
+  if (gw == 0 || mask == 0) {
+    printf("Wrong IP format.\n");
+    return 1;
+  }
+
   if (count <= 0) {
     printf("Packet quantity must be greater than 0.\n");
     return 1;
   }
 
-  uint32_t network_addr = gw & mask;
+  uint32_t network_addr = get_network_addr(gw, mask);
 
   srand(time(NULL));
 
@@ -46,7 +40,7 @@ int main(int argc, char *argv[]) {
         ((uint32_t)(rand() & 0xFF) << 24 | (uint32_t)(rand() & 0xFF) << 16 |
          (uint32_t)(rand() & 0xFF) << 8 | (uint32_t)(rand() & 0xFF));
 
-    if ((random_ip & mask) == network_addr) {
+    if (is_in_subnet(random_ip, network_addr, mask)) {
       own_count++;
     } else {
       other_count++;

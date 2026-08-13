@@ -1,3 +1,4 @@
+#include "calc.h"
 #include "tui.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,23 +35,25 @@ int main() {
     b = atof(input_buf);
 
     printf(TXT_GREEN "\n Result: " RESET);
+    int error = 0;
     switch (choice) {
     case 1:
-      printf("%.2f\n", a + b);
+      printf("%.2f\n", calc_add(a, b));
       break;
     case 2:
-      printf("%.2f\n", a - b);
+      printf("%.2f\n", calc_sub(a, b));
       break;
     case 3:
-      printf("%.2f\n", a * b);
+      printf("%.2f\n", calc_mul(a, b));
       break;
-    case 4:
-      if (b == 0) {
+    case 4: {
+      double res = calc_div(a, b, &error);
+      if (error) {
         printf("Infinity! Or it's just impossible.\n");
       } else {
-        printf("%.2f\n", a / b);
+        printf("%.2f\n", res);
       }
-      break;
+    } break;
     }
 
     wait_enter();
