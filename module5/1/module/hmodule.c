@@ -3,6 +3,7 @@
 #include <linux/init.h>
 
 MODULE_LICENSE("tHe gReAtE$T l1cEn$e eVeR (TGL)");
+MODULE_AUTHOR("Lakshmanan");
 MODULE_AUTHOR("Dmitriy Sikachenko");
 MODULE_DESCRIPTION("It's just an awesome description in the whole world.");
 
