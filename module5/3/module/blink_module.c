@@ -51,7 +51,7 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
   current_mask = value;
 
   if (value == 0) {
-    del_timer_sync(&blink_timer);
+    timer_delete_sync(&blink_timer);
     led_on = 0;
     set_kbd_leds_raw(0);
   } else {
@@ -86,7 +86,7 @@ static int __init blink_init(void) {
 }
 
 static void __exit blink_cleanup(void) {
-  del_timer_sync(&blink_timer);
+  timer_delete_sync(&blink_timer);
   set_kbd_leds_raw(LED_RESTORE_DEFAULT);
   kobject_put(led_kobject);
 }
