@@ -7,7 +7,7 @@
 
 #define NETLINK_UNIT 31
 #define MAX_PAYLOAD 256
-#define MSG_TO_KERNEL "hello from userspace"
+#define MSG_TO_KERNEL "I'm damn good!"
 
 int main(void) {
   int sock = socket(PF_NETLINK, SOCK_RAW, NETLINK_UNIT);

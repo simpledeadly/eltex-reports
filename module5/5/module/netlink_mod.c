@@ -7,7 +7,7 @@
 #include <net/sock.h>
 
 #define NETLINK_UNIT 31
-#define REPLY_MSG "hello from kernel"
+#define REPLY_MSG "how are you going?"
 
 static struct sock *nl_sock;
 
