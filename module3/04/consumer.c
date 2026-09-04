@@ -35,15 +35,12 @@ int main(void) {
     }
 
     int found_unprocessed = 0;
-    int all_processed = 1;
     size_t off = sizeof(SharedHeader);
 
     while (1) {
       BlockHeader *b = (BlockHeader *)(base + off);
 
       if (b->count != 0) {
-        all_processed = 0;
-
         int min = b->data[0], max = b->data[0];
         for (int i = 1; i < b->count; i++) {
           if (b->data[i] < min)
@@ -65,8 +62,7 @@ int main(void) {
     }
 
     int should_cleanup = 0;
-    if (!found_unprocessed && all_processed && shdr->producer_done &&
-        !shdr->cleanup_done) {
+    if (!found_unprocessed && shdr->producer_done && !shdr->cleanup_done) {
       shdr->cleanup_done = 1;
       should_cleanup = 1;
     }
@@ -85,16 +81,12 @@ int main(void) {
       break;
     }
 
-    if (!found_unprocessed && !all_processed) {
-      fprintf(stderr, "consumer[%d]: warning: inconsistent state\n", getpid());
-    }
-
-    if (!found_unprocessed && all_processed && !shdr->producer_done) {
+    if (!found_unprocessed && !shdr->producer_done) {
       usleep((rand() % 500 + 200) * 1000);
       continue;
     }
 
-    if (!found_unprocessed && all_processed && shdr->cleanup_done) {
+    if (!found_unprocessed && shdr->cleanup_done) {
       printf(
           "consumer[%d]: cleanup already done by another consumer, exiting\n",
           getpid());
